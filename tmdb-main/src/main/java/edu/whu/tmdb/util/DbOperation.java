@@ -1,7 +1,8 @@
 package edu.whu.tmdb.util;
 
-import edu.whu.tmdb.query.operations.utils.MemConnect;
+
 import edu.whu.tmdb.query.operations.utils.SelectResult;
+import edu.whu.tmdb.storage.memory.MemManager;
 import edu.whu.tmdb.storage.memory.SystemTable.BiPointerTableItem;
 import edu.whu.tmdb.storage.memory.SystemTable.ClassTableItem;
 import edu.whu.tmdb.storage.memory.SystemTable.DeputyTableItem;
@@ -11,6 +12,8 @@ import edu.whu.tmdb.storage.memory.Tuple;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import static edu.whu.tmdb.query.operations.utils.MemConnect.getClassTableList;
 
 public class DbOperation {
     /**
@@ -40,7 +43,7 @@ public class DbOperation {
      */
     public static void resetDB() {
         // 仓库路径
-        String repositoryPath = "D:\\cs\\JavaProject\\TMDB";
+        String repositoryPath = "D:\\WHU-2024-DB\\tmdb-main";
 
         // 子目录路径
         String sysPath = repositoryPath + File.separator + "data\\sys";
@@ -80,9 +83,25 @@ public class DbOperation {
         // TODO-task2
     }
 
+
     public static void showClassTable() {
-        // TODO-task2
+        // 获取全部的 ClassTableItem 实例，假设 getClassTableList() 方法已实现并可用
+        List<ClassTableItem> classTableItems = MemManager.classTable.classTableList;
+        // 打印表头
+        System.out.println("| Class Name       | Class ID | Attribute Name    | Attribute ID | Attribute Type |");
+        System.out.println("|------------------|----------|-------------------|--------------|----------------|");
+
+        // 遍历每个 ClassTableItem 实例，每个实例代表一个属性
+        for (ClassTableItem classItem : classTableItems) {
+            System.out.printf("| %-16s | %-8d | %-17s | %-12d | %-14s |\n",
+                    classItem.classname,
+                    classItem.classid,
+                    classItem.attrname,
+                    classItem.attrid,
+                    classItem.attrtype);
+        }
     }
+
 
     public static void showDeputyTable() {
         // TODO-task2

@@ -22,6 +22,8 @@ import static edu.whu.tmdb.util.FileOperation.getFileNameWithoutExtension;
 /*test methods*/
 import edu.whu.tmdb.query.operations.utils.MemConnect;
 import edu.whu.tmdb.storage.memory.MemManager;
+import edu.whu.tmdb.storage.memory.SystemTable.ClassTable;
+
 public class Main {
     public static void main(String[] args) throws IOException, TMDBException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
@@ -31,6 +33,7 @@ public class Main {
             switch (args[0]) {
                 case "test1":
                     test1();
+
                     break;
                 case "test2":
                     test2();
@@ -54,8 +57,10 @@ public class Main {
             } else if ("show BiPointerTable".equalsIgnoreCase(sqlCommand)) {
                 DbOperation.showBiPointerTable();
             } else if ("show ClassTable".equalsIgnoreCase(sqlCommand)) {
+                System.out.println("No");
                 DbOperation.showClassTable();
             } else if ("show DeputyTable".equalsIgnoreCase(sqlCommand)) {
+                System.out.println("No");
                 DbOperation.showDeputyTable();
             } else if ("show SwitchingTable".equalsIgnoreCase(sqlCommand)) {
                 DbOperation.showSwitchingTable();
@@ -82,14 +87,14 @@ public class Main {
         System.out.println("Running test1...");
         MemManager memManager = new MemManager();
         MemConnect memConnect = MemConnect.getInstance(memManager);
-        testGetClassId(memConnect, "table1");  // 用实际的类名替换 "YourClassNameHere"
+        testGetClassId(memConnect, "test");  // 用实际的类名替换 "YourClassNameHere"
         // Test 1 logic
         System.out.println("Running test1.1...");
-        List attrname= memConnect.getColumns("table1");  // 用实际的类名替换 "YourClassNameHer
+        List attrname= memConnect.getColumns("test");  // 用实际的类名替换 "YourClassNameHer
         System.out.println("attrname:"+attrname);
         // Test 1.1 logic
         System.out.println("Running test1.2...");
-        int attrnum=memConnect.getClassAttrnum("table1");
+        int attrnum=memConnect.getClassAttrnum("test");
         System.out.println("attrnum:"+attrnum);
         // Test 1.2 logic
 
@@ -113,6 +118,16 @@ public class Main {
         boolean class_exist = memConnect.classExist("table1");
         System.out.println("class_exist: " + class_exist);
         // Test 1.6 logic
+
+        System.out.println("Running test1.7...");
+        boolean column_exist = memConnect.columnExist("table1","value_1");
+        System.out.println("column_exist: " + column_exist);
+        // Test 1.7 logic
+
+        System.out.println("Running test1.8...");
+        List<Integer> duex = memConnect.getDeputyIdList(1);
+        System.out.println("column_exist: " + duex);
+        // Test 1.8 logic
     }
 
     private static void test2() {

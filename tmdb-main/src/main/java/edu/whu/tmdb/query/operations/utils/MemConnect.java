@@ -142,8 +142,8 @@ public class MemConnect {
             }
         }
         if (attributes.isEmpty())
-        // Assuming each ClassTableItem has a list of attribute names stored in `attributes`
-        // If no class is found with the provided name, throw an exception
+            // Assuming each ClassTableItem has a list of attribute names stored in `attributes`
+            // If no class is found with the provided name, throw an exception
             throw new TMDBException(ErrorList.CLASS_NAME_DOES_NOT_EXIST, "No class found with the name: " + tableName);
         else
             return attributes;
@@ -198,7 +198,7 @@ public class MemConnect {
             }
         }
         if(id.isEmpty())
-        // If no class is found with the provided ID, throw an exception
+            // If no class is found with the provided ID, throw an exception
             throw new TMDBException(ErrorList.CLASS_ID_DOES_NOT_EXIST,"No class found with ID: " + classId);
         int[] intArray = id.stream().mapToInt(Integer::intValue).toArray();
         return  intArray;
@@ -289,9 +289,13 @@ public class MemConnect {
      * @return 存在返回true，否则返回false
      */
     public boolean columnExist(String tableName, String columnName) throws TMDBException {
-        // TODO
-
-        return false;
+        List<ClassTableItem> classTableItems = getClassTableList(); // 获取所有类信息的列表
+        for (ClassTableItem item : classTableItems) {
+            if (item.classname.equals(tableName)&&item.attrname.equals(columnName)) {
+                return true; // 如果找到匹配的类名，返回true
+            }
+        }
+        return false; // 如果遍历完列表后没有找到，返回false
     }
 
     /**
@@ -301,10 +305,26 @@ public class MemConnect {
      * @throws TMDBException 不存在给定表名的表，抛出异常
      */
     public ArrayList<Integer> getDeputyIdList(int classId) throws TMDBException {
-        // TODO
-        // 不存在时抛出异常
+        System.out.println("1");
+        List<DeputyTableItem> deputyTableItems = getDeputyTableList(); // Assuming this method returns a list of all deputy table entries
+        ArrayList<Integer> deputyIds = new ArrayList<>();
+        System.out.println("2"+deputyTableItems);
+        boolean found = false;
+        for (DeputyTableItem item : deputyTableItems) {
+            System.out.println("3");
+            if (item.originid == classId) {
+                System.out.println("4");
+                deputyIds.add(item.deputyid);
+                found = true;
+            }
+        }
 
-        return new ArrayList<>();
+/*        if (!found) {
+            throw new TMDBException(ErrorList.CLASS_NAME_DOES_NOT_EXIST);
+        }*/
+
+        return deputyIds;
+
     }
 
     public boolean Condition(String attrtype, Tuple tuple, int attrid, String value1) {

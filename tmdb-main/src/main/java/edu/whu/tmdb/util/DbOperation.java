@@ -3,10 +3,7 @@ package edu.whu.tmdb.util;
 
 import edu.whu.tmdb.query.operations.utils.SelectResult;
 import edu.whu.tmdb.storage.memory.MemManager;
-import edu.whu.tmdb.storage.memory.SystemTable.BiPointerTableItem;
-import edu.whu.tmdb.storage.memory.SystemTable.ClassTableItem;
-import edu.whu.tmdb.storage.memory.SystemTable.DeputyTableItem;
-import edu.whu.tmdb.storage.memory.SystemTable.SwitchingTableItem;
+import edu.whu.tmdb.storage.memory.SystemTable.*;
 import edu.whu.tmdb.storage.memory.Tuple;
 
 import java.io.File;
@@ -43,7 +40,7 @@ public class DbOperation {
      */
     public static void resetDB() {
         // 仓库路径
-        String repositoryPath = "D:\\WHU-2024-DB\\tmdb-main";
+        String repositoryPath = "D:\\WHU-2024-DB";
 
         // 子目录路径
         String sysPath = repositoryPath + File.separator + "data\\sys";
@@ -80,7 +77,20 @@ public class DbOperation {
     }
 
     public static void showBiPointerTable() {
-        // TODO-task2
+        List<BiPointerTableItem> BIitems = MemManager.biPointerTable.biPointerTableList;
+        // 输出表头
+        System.out.println("| Class ID | Object ID      | Deputy ID | Deputy Object ID |");
+        System.out.println("|----------|----------------|-----------|------------------|");
+
+        // 输出表格数据行
+        for (BiPointerTableItem BIitem : BIitems) {
+            System.out.printf("| %-9d | %-14d | %-9d | %-16d |\n",
+                    BIitem.classid,
+                    BIitem.objectid,
+                    BIitem.deputyid,
+                    BIitem.deputyobjectid
+            );
+        }
     }
 
 
@@ -102,12 +112,39 @@ public class DbOperation {
         }
     }
 
-
     public static void showDeputyTable() {
-        // TODO-task2
+        List<DeputyTableItem> deputyItems = MemManager.deputyTable.deputyTableList; // Assume access to a list of deputy table items
+        // Print table header
+        System.out.println("| Origin ID | Deputy ID | Deputy Rules                           |");
+        System.out.println("|-----------|-----------|----------------------------------------|");
+
+        // Iterate over each item in the list and print formatted output
+        for (DeputyTableItem item : deputyItems) {
+            String rules = String.join(", ", item.deputyrule); // Join all rules into a single string for display
+            System.out.printf("| %-10d | %-10d | %-38s |\n",
+                    item.originid,
+                    item.deputyid,
+                    rules);
+        }
     }
 
+
     public static void showSwitchingTable() {
-        // TODO-task2
+        List<SwitchingTableItem> switchingItems = MemManager.switchingTable.switchingTableList; // Assumed access to a list of switching table items
+        // Print table header
+        System.out.println("| Ori ID | Ori Attr ID | Ori Attr Name    | Deputy ID | Deputy Attr ID | Deputy Attr Name  | Rule       |");
+        System.out.println("|--------|-------------|------------------|-----------|----------------|-------------------|------------|");
+
+        // Iterate over each item in the list and print formatted output
+        for (SwitchingTableItem item : switchingItems) {
+            System.out.printf("| %-6d | %-11d | %-17s | %-9d | %-14d | %-14s | %-11s |\n",
+                    item.oriId,
+                    item.oriAttrid,
+                    item.oriAttr,
+                    item.deputyId,
+                    item.deputyAttrId,
+                    item.deputyAttr,
+                    item.rule);
+        }
     }
 }

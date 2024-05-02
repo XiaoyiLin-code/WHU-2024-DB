@@ -57,10 +57,8 @@ public class Main {
             } else if ("show BiPointerTable".equalsIgnoreCase(sqlCommand)) {
                 DbOperation.showBiPointerTable();
             } else if ("show ClassTable".equalsIgnoreCase(sqlCommand)) {
-                System.out.println("No");
                 DbOperation.showClassTable();
-            } else if ("show DeputyTable".equalsIgnoreCase(sqlCommand)) {
-                System.out.println("No");
+            } else if ("show DeputyTable".equalsIgnoreCase(sqlCommand)) {;
                 DbOperation.showDeputyTable();
             } else if ("show SwitchingTable".equalsIgnoreCase(sqlCommand)) {
                 DbOperation.showSwitchingTable();

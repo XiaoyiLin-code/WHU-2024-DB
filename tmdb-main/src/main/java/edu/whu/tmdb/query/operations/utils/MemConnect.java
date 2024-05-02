@@ -305,15 +305,11 @@ public class MemConnect {
      * @throws TMDBException 不存在给定表名的表，抛出异常
      */
     public ArrayList<Integer> getDeputyIdList(int classId) throws TMDBException {
-        System.out.println("1");
         List<DeputyTableItem> deputyTableItems = getDeputyTableList(); // Assuming this method returns a list of all deputy table entries
         ArrayList<Integer> deputyIds = new ArrayList<>();
-        System.out.println("2"+deputyTableItems);
         boolean found = false;
         for (DeputyTableItem item : deputyTableItems) {
-            System.out.println("3");
             if (item.originid == classId) {
-                System.out.println("4");
                 deputyIds.add(item.deputyid);
                 found = true;
             }

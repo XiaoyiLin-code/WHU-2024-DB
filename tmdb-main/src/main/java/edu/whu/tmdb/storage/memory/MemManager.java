@@ -510,12 +510,18 @@ public class MemManager {
             // writeAccess.write(item.oriId);
             // 存oriattrid
             writeAccess.write(Constant.INT_TO_BYTES(item.oriAttrid));
+
+            writeAccess.write(Constant.INT_TO_BYTES(item.oriAttr.length()));
+            writeAccess.write(item.oriAttr.getBytes());
             // writeAccess.write(item.deputy.getBytes());
             // 存deputyclassid
             writeAccess.write(Constant.INT_TO_BYTES(item.deputyId));
             // writeAccess.write(item.attr.getBytes());
             // 存deputyattrid
             writeAccess.write(Constant.INT_TO_BYTES(item.deputyAttrId));
+
+            writeAccess.write(Constant.INT_TO_BYTES(item.deputyAttr.length()));
+            writeAccess.write(item.deputyAttr.getBytes());
             // writeAccess.write(item.deputy.getBytes());
             // 存rule，先存储长度，再存储数据
             writeAccess.write(Constant.INT_TO_BYTES(item.rule.length()));
@@ -544,6 +550,12 @@ public class MemManager {
             item.oriAttrid = raf.readInt();
             cur += Integer.BYTES;
 
+            int len = raf.readInt();
+            byte[] buffer = new byte[len];
+            raf.read(buffer);
+            item.oriAttr = new String(buffer);
+            cur += (Integer.BYTES + len);
+
             // 读取deputyId
             item.deputyId = raf.readInt();
             cur += Integer.BYTES;
@@ -552,13 +564,19 @@ public class MemManager {
             item.deputyAttrId = raf.readInt();
             cur += Integer.BYTES;
 
+            len = raf.readInt();
+            buffer = new byte[len];
+            raf.read(buffer);
+            item.deputyAttr = new String(buffer);
+            cur += (Integer.BYTES + len);
+
             // 读rule
             int ruleLength = raf.readInt();
             cur += Integer.BYTES;
-            byte[] buffer = new byte[ruleLength];
-            raf.read(buffer);
+            byte[] buffer1 = new byte[ruleLength];
+            raf.read(buffer1);
             cur += ruleLength;
-            item.rule = new String(buffer);
+            item.rule = new String(buffer1);
 
             this.switchingTable.switchingTableList.add(item);
         }

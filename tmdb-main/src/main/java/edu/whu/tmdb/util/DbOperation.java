@@ -15,6 +15,7 @@ import static edu.whu.tmdb.query.operations.utils.MemConnect.getClassTableList;
 public class DbOperation {
     /**
      * 给定元组查询结果，输出查询表格
+     *
      * @param result 查询语句的查询结果
      */
     public static void printResult(SelectResult result) {
@@ -64,7 +65,9 @@ public class DbOperation {
 
             // 获取目录中的所有文件
             File[] files = directory.listFiles();
-            if (files == null) { continue; }
+            if (files == null) {
+                continue;
+            }
             for (File file : files) {
                 // 删除文件
                 if (file.delete()) {
@@ -84,7 +87,7 @@ public class DbOperation {
 
         // 输出表格数据行
         for (BiPointerTableItem BIitem : BIitems) {
-            System.out.printf("| %-9d | %-14d | %-9d | %-16d |\n",
+            System.out.printf("| %-8d | %-14d | %-9d | %-16d |\n",
                     BIitem.classid,
                     BIitem.objectid,
                     BIitem.deputyid,
@@ -121,7 +124,7 @@ public class DbOperation {
         // Iterate over each item in the list and print formatted output
         for (DeputyTableItem item : deputyItems) {
             String rules = String.join(", ", item.deputyrule); // Join all rules into a single string for display
-            System.out.printf("| %-10d | %-10d | %-38s |\n",
+            System.out.printf("| %-9d | %-9d | %-38s |\n",
                     item.originid,
                     item.deputyid,
                     rules);
@@ -131,13 +134,14 @@ public class DbOperation {
 
     public static void showSwitchingTable() {
         List<SwitchingTableItem> switchingItems = MemManager.switchingTable.switchingTableList; // Assumed access to a list of switching table items
+
         // Print table header
         System.out.println("| Ori ID | Ori Attr ID | Ori Attr Name    | Deputy ID | Deputy Attr ID | Deputy Attr Name  | Rule       |");
         System.out.println("|--------|-------------|------------------|-----------|----------------|-------------------|------------|");
 
         // Iterate over each item in the list and print formatted output
         for (SwitchingTableItem item : switchingItems) {
-            System.out.printf("| %-6d | %-11d | %-17s | %-9d | %-14d | %-14s | %-11s |\n",
+            System.out.printf("| %-6d | %-11d | %-16s | %-9d | %-14d | %-17s | %-10s |\n",
                     item.oriId,
                     item.oriAttrid,
                     item.oriAttr,

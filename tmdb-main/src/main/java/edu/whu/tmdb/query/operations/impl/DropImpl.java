@@ -6,6 +6,7 @@ import net.sf.jsqlparser.statement.Statement;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import edu.whu.tmdb.storage.memory.SystemTable.BiPointerTableItem;
 import edu.whu.tmdb.storage.memory.SystemTable.ClassTableItem;
@@ -55,7 +56,15 @@ public class DropImpl implements Drop {
      * @param classId 要删除的表对应的id
      */
     private void dropClassTable(int classId) {
-        // TODO-task4
+        List<ClassTableItem> classTableList = MemConnect.getClassTableList();
+
+        // Remove all items from the class table that match the given classId
+        boolean removed = classTableList.removeIf(item -> item.classid == classId);
+
+        // Optionally, handle the case where no items were found (and thus nothing was removed)
+        if (!removed) {
+            System.out.println("No entries found for classId: " + classId);
+        }
     }
 
     /**
@@ -64,32 +73,86 @@ public class DropImpl implements Drop {
      * @param deputyClassIdList 作为返回值，源类对应的代理类id列表
      */
     private void dropDeputyClassTable(int classId, ArrayList<Integer> deputyClassIdList) {
-        // TODO-task4
+        // Access the list of all deputy class table items
+        List<DeputyTableItem> deputyTableList = MemConnect.getDeputyTableList();
+
+        // Use an iterator to safely remove items while iterating
+        Iterator<DeputyTableItem> iterator = deputyTableList.iterator();
+        while (iterator.hasNext()) {
+            DeputyTableItem item = iterator.next();
+            if (item.originid == classId) {
+                // Add the deputy class ID to the list before removing the item
+                deputyClassIdList.add(item.deputyid);
+                iterator.remove();  // Remove the item from the list
+            }
+        }
+
+        // Optionally, check if any deputies were found and removed
+        if (deputyClassIdList.isEmpty()) {
+            System.out.println("No deputy classes found for classId: " + classId);
+        } else {
+            for(Integer deputyid:deputyClassIdList) {
+                MemConnect.getClassTableList().removeIf(item -> item.classid == deputyid);}
+            System.out.println("Deputy class entries removed for classId: " + classId + ", Deputy IDs: " + deputyClassIdList);
+        }
     }
+
 
     /**
      * 删除系统表中的BiPointerTable
      * @param classId 源类id
      */
     private void dropBiPointerTable(int classId) {
-        // TODO-task4
+        // Attempt to remove entries from the bi-pointer table that match the given classId
+        boolean removed = MemConnect.getBiPointerTableList().removeIf(item -> item.classid == classId);
+
+        // Check if any items were actually removed
+        if (!removed) {
+            System.out.println("No entries found for classId: " + classId + " in BiPointerTable.");
+        } else {
+            System.out.println("Entries for classId: " + classId + " have been successfully removed from BiPointerTable.");
+        }
     }
+
 
     /**
      * 删除系统表中的SwitchingTable
      * @param classId 源类id
      */
     private void dropSwitchingTable(int classId) {
-        // TODO-task4
+        // Access the list of all switching table items
+        List<SwitchingTableItem> switchingTableList = MemConnect.getSwitchingTableList();
+
+        // Use the removeIf method to remove all entries with the specified classId
+        boolean removed = switchingTableList.removeIf(item -> item.oriId == classId);
+
+        // Optionally, handle the case where no items were found (and thus nothing was removed)
+        if (!removed) {
+            System.out.println("No entries found for classId: " + classId + " in the SwitchingTable.");
+        } else {
+            System.out.println("All entries for classId: " + classId + " have been successfully removed from the SwitchingTable.");
+        }
     }
+
 
     /**
      * 删除源类具有的所有对象的列表
      * @param classId 源类id
      */
     private void dropObjectTable(int classId) {
-        // TODO-task4
-        // 使用MemConnect.getObjectTableList().remove();
+        // Get the list of all object table items
+        List<ObjectTableItem> objectTableList = MemConnect.getObjectTableList();
+
+        // Use the removeIf method to remove all entries with the specified classId
+        boolean removed = objectTableList.removeIf(item -> item.classid == classId);
+
+        // Optionally, handle the case where no items were found (and thus nothing was removed)
+        if (!removed) {
+            System.out.println("No entries found for classId: " + classId + " in the ObjectTable.");
+        } else {
+            System.out.println("All entries for classId: " + classId + " have been successfully removed from the ObjectTable.");
+        }
     }
+
 
 }

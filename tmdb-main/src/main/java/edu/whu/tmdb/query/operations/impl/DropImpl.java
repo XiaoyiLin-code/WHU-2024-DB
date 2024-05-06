@@ -46,7 +46,9 @@ public class DropImpl implements Drop {
         dropBiPointerTable(classId);                        // 3.删除 源类/对象<->代理类/对象 的双向关系表
         dropSwitchingTable(classId);                        // 4.删除switchingTable
         dropObjectTable(classId);                           // 5.删除已创建的源类对象
-
+        for(int deputyclassid:deputyClassIdList){
+            drop(deputyclassid);
+        }
         // 6.递归删除代理类相关
         // TODO-task4
     }

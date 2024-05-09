@@ -193,11 +193,27 @@ public class Where {
         }
         return getSelectResultFromSet(selectResult, overlap);
     }
-
-    public SelectResult orExpression(OrExpression expression,SelectResult selectResult) throws TMDBException, IOException {
-        // TODO-task7
-        return selectResult;
+    public SelectResult orExpression(OrExpression expression, SelectResult selectResult) throws TMDBException, IOException {
+        // 获取表达式的左右两部分
+        Expression left = expression.getLeftExpression();
+        Expression right = expression.getRightExpression();
+    
+        // 对左右两边的表达式分别进行筛选
+        SelectResult selectResult1 = execute(left, selectResult);
+        SelectResult selectResult2 = execute(right, selectResult);
+    
+        // 将两个结果集合并，以保留满足任一条件的元组
+        HashSet<Tuple> combinedSet = getTupleSet(selectResult1);
+        combinedSet.addAll(getTupleSet(selectResult2));
+    
+        // 从合并的结果集中构建 SelectResult 返回
+        return getSelectResultFromSet(selectResult, combinedSet);
     }
+    
+    // public SelectResult orExpression(OrExpression expression,SelectResult selectResult) throws TMDBException, IOException {
+    //     // TODO-task7
+    //     return selectResult;
+    // }
 
     public SelectResult inExpression(InExpression expression, SelectResult selectResult) throws TMDBException, IOException {
         ArrayList<Object> left=formula.formulaExecute(expression.getLeftExpression(),selectResult);
@@ -238,29 +254,77 @@ public class Where {
         return getSelectResultFromSet(selectResult, set);
     }
 
-    public SelectResult minorThan(MinorThan expression,SelectResult selectResult) throws TMDBException {
-        // TODO-task6
-
-        return selectResult;
+    public SelectResult minorThan(MinorThan expression, SelectResult selectResult) throws TMDBException {
+        ArrayList<Object> left = formula.formulaExecute(expression.getLeftExpression(), selectResult);
+        ArrayList<Object> right = formula.formulaExecute(expression.getRightExpression(), selectResult);
+        HashSet<Tuple> set = new HashSet<>();
+        for (int i = 0; i < left.size(); i++) {
+            if (compare(left.get(i), right.get(i)) < 0) {
+                set.add(selectResult.getTpl().tuplelist.get(i));
+            }
+        }
+        return getSelectResultFromSet(selectResult, set);
     }
-
+    
     public SelectResult minorThanEquals(MinorThanEquals expression, SelectResult selectResult) throws TMDBException {
-        // TODO-task6
-
-        return selectResult;
+        ArrayList<Object> left = formula.formulaExecute(expression.getLeftExpression(), selectResult);
+        ArrayList<Object> right = formula.formulaExecute(expression.getRightExpression(), selectResult);
+        HashSet<Tuple> set = new HashSet<>();
+        for (int i = 0; i < left.size(); i++) {
+            if (compare(left.get(i), right.get(i)) <= 0) {
+                set.add(selectResult.getTpl().tuplelist.get(i));
+            }
+        }
+        return getSelectResultFromSet(selectResult, set);
     }
-
+    
     public SelectResult greaterThan(GreaterThan expression, SelectResult selectResult) throws TMDBException {
-        // TODO-task6
-
-        return selectResult;
+        ArrayList<Object> left = formula.formulaExecute(expression.getLeftExpression(), selectResult);
+        ArrayList<Object> right = formula.formulaExecute(expression.getRightExpression(), selectResult);
+        HashSet<Tuple> set = new HashSet<>();
+        for (int i = 0; i < left.size(); i++) {
+            if (compare(left.get(i), right.get(i)) > 0) {
+                set.add(selectResult.getTpl().tuplelist.get(i));
+            }
+        }
+        return getSelectResultFromSet(selectResult, set);
     }
-
+    
     public SelectResult greaterThanEquals(GreaterThanEquals expression, SelectResult selectResult) throws TMDBException {
-        // TODO-task6
-
-        return selectResult;
+        ArrayList<Object> left = formula.formulaExecute(expression.getLeftExpression(), selectResult);
+        ArrayList<Object> right = formula.formulaExecute(expression.getRightExpression(), selectResult);
+        HashSet<Tuple> set = new HashSet<>();
+        for (int i = 0; i < left.size(); i++) {
+            if (compare(left.get(i), right.get(i)) >= 0) {
+                set.add(selectResult.getTpl().tuplelist.get(i));
+            }
+        }
+        return getSelectResultFromSet(selectResult, set);
     }
+    
+    // public SelectResult minorThan(MinorThan expression,SelectResult selectResult) throws TMDBException {
+    //     // TODO-task6
+
+    //     return selectResult;
+    // }
+
+    // public SelectResult minorThanEquals(MinorThanEquals expression, SelectResult selectResult) throws TMDBException {
+    //     // TODO-task6
+
+    //     return selectResult;
+    // }
+
+    // public SelectResult greaterThan(GreaterThan expression, SelectResult selectResult) throws TMDBException {
+    //     // TODO-task6
+
+    //     return selectResult;
+    // }
+
+    // public SelectResult greaterThanEquals(GreaterThanEquals expression, SelectResult selectResult) throws TMDBException {
+    //     // TODO-task6
+
+    //     return selectResult;
+    // }
 
     public HashSet<Tuple> getTupleSet(SelectResult selectResult){
         return new HashSet<>(selectResult.getTpl().tuplelist);

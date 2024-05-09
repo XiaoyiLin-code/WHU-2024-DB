@@ -210,6 +210,7 @@ public class Formula {
                 break;
             case "char":
                 dataList.add(String.valueOf(obj));
+                break;
             default:
                 throw new TMDBException(ErrorList.TYPE_IS_NOT_SUPPORTED, type);
         }

@@ -2,7 +2,9 @@ package edu.whu.tmdb.query.operations.impl;
 
 
 import edu.whu.tmdb.storage.memory.MemManager;
+import edu.whu.tmdb.storage.memory.SystemTable.BiPointerTable;
 import edu.whu.tmdb.storage.memory.SystemTable.BiPointerTableItem;
+import edu.whu.tmdb.storage.memory.SystemTable.ObjectTable;
 import edu.whu.tmdb.storage.memory.SystemTable.ObjectTableItem;
 import edu.whu.tmdb.storage.memory.Tuple;
 import edu.whu.tmdb.storage.memory.TupleList;
@@ -69,6 +71,9 @@ public class DeleteImpl implements Delete {
         //     deputyTupleList.addTuple(tuple);
         // }
         // delete(deputyTupleList);
+
+
+
     }
 
 }

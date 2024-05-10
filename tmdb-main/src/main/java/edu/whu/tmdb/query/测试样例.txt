@@ -8,7 +8,7 @@ INSERT INTO company VALUES ("ff",30,1000);
 
 
 SELECT name from company UNION SELECT name from company;
-SELECT name, AVG(salary) from company UNION SELECT name from company groupby name;
+SELECT name, AVG(salary) from company UNION SELECT name from company group by name;
 create CLASS test (name char,age int, salary int);
 INSERT INTO test VALUES (aa,20,1000);
 INSERT INTO test VALUES (bb,30,8000);

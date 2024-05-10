@@ -386,6 +386,17 @@ public class MemConnect {
     // 获取系统表表项
     public static List<ObjectTableItem> getObjectTableList() { return MemManager.objectTable.objectTableList; }
 
+    //通过元组id获取ObjectTableItem
+    public static List<ObjectTableItem> getObjectTableItemByTuple(Tuple tuple) {
+        List<ObjectTableItem> objectTableItems = new ArrayList<>();
+            for (ObjectTableItem item : getObjectTableList()) {
+                if (item.tupleid == tuple.tupleId) {
+                    objectTableItems.add(item);
+                }
+        }
+        return objectTableItems;
+    }
+
     public static List<ClassTableItem> getClassTableList() { return MemManager.classTable.classTableList; }
 
     public static List<DeputyTableItem> getDeputyTableList() { return MemManager.deputyTable.deputyTableList; }

@@ -137,14 +137,14 @@ public class InsertImpl implements Insert {
 
         // 2.2 将元组转换为代理类应有的形式
         if (!DeputyIdList.isEmpty()) {
-            for (int deputyCalssId : DeputyIdList) {
-                HashMap<String, String> attrNameHashMap = getAttrNameHashMap(classId, deputyCalssId, columns);
+            for (int deputyClassId : DeputyIdList) {
+                HashMap<String, String> attrNameHashMap = getAttrNameHashMap(classId, deputyClassId, columns);
                 List<String> deputyColumns = getDeputyColumns(attrNameHashMap, columns);    // 根据源类属性名列表获取代理类属性名列表
                 Tuple deputyTuple = getDeputyTuple(attrNameHashMap, tuple, columns);        // 将插入源类的元组tuple转换为插入代理类的元组deputyTuple
 
                 // 2.3 递归插入
-                int tupleId = execute(deputyCalssId, deputyColumns, deputyTuple);
-                MemConnect.getBiPointerTableList().add(new BiPointerTableItem(classId, tupleid, deputyCalssId, tupleId));
+                int tupleId = execute(deputyClassId, deputyColumns, deputyTuple);
+                MemConnect.getBiPointerTableList().add(new BiPointerTableItem(classId, tupleid, deputyClassId, tupleId));
             }
         }
         return tupleid;

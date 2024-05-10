@@ -2,10 +2,7 @@ package edu.whu.tmdb.query.operations.impl;
 
 
 import edu.whu.tmdb.storage.memory.MemManager;
-import edu.whu.tmdb.storage.memory.SystemTable.BiPointerTable;
-import edu.whu.tmdb.storage.memory.SystemTable.BiPointerTableItem;
-import edu.whu.tmdb.storage.memory.SystemTable.ObjectTable;
-import edu.whu.tmdb.storage.memory.SystemTable.ObjectTableItem;
+import edu.whu.tmdb.storage.memory.SystemTable.*;
 import edu.whu.tmdb.storage.memory.Tuple;
 import edu.whu.tmdb.storage.memory.TupleList;
 import net.sf.jsqlparser.JSQLParserException;
@@ -17,6 +14,8 @@ import net.sf.jsqlparser.statement.Statement;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Collections;
 
 import edu.whu.tmdb.query.operations.Exception.TMDBException;
 import edu.whu.tmdb.query.operations.Delete;
@@ -25,8 +24,10 @@ import edu.whu.tmdb.query.operations.utils.MemConnect;
 import edu.whu.tmdb.query.operations.utils.SelectResult;
 
 public class DeleteImpl implements Delete {
-
-    public DeleteImpl() {}
+    private MemConnect memConnect;
+    public DeleteImpl() {
+        this.memConnect = MemConnect.getInstance(MemManager.getInstance());
+    }
 
     @Override
     public void delete(Statement statement) throws JSQLParserException, TMDBException, IOException {
@@ -47,33 +48,36 @@ public class DeleteImpl implements Delete {
         SelectResult selectResult = select.select(parse);
 
         // 2.执行delete
-        delete(selectResult.getTpl());
+        int classId = memConnect.getClassId(table.getName());
+        for (Tuple tuple : selectResult.getTpl().tuplelist) {
+            delete(classId, tuple);
+        }
     }
 
-    public void delete(TupleList tupleList) {
-        // TODO-task8
-        // 1.删除源类tuple和object table
-
-            // 使用MemConnect.getObjectTableList().remove();   // 删除对象表
 
 
+    /**
+     * @param classId 表/类id
+     * @param tuple 要删除的元组
+     */
+    public void delete(int classId,Tuple tuple) throws TMDBException, IOException {
+        //1. Delete tuples from objtable
+        List<ObjectTableItem> tmp= MemConnect.getObjectTableItemByTuple(tuple);
+        MemConnect.getObjectTable().objectTableList.removeAll(tmp);
+        //2. Delete tuples from biPointerTable
+        MemConnect.getBiPointerTable().biPointerTableList.removeIf(
+                biPointerTableItem ->
+                        biPointerTableItem.objectid == tuple.tupleId);
+        //3. Delete tuples
+        memConnect.DeleteTuple(tuple.tupleId);
 
-        // 2.删除源类biPointerTable
-
-            // 使用MemConnect.getBiPointerTableList().remove();
-
-
-        // 3.根据biPointerTable递归删除代理类相关表
-        // if (deputyTupleIdList.isEmpty()) { return; }
-        // TupleList deputyTupleList = new TupleList();
-        // for (Integer deputyTupleId : deputyTupleIdList) {
-        //     Tuple tuple = memConnect.GetTuple(deputyTupleId);
-        //     deputyTupleList.addTuple(tuple);
-        // }
-        // delete(deputyTupleList);
-
-
-
+        //4. Recursively delete tuples from deputy classes
+        ArrayList<Integer> DeputyIdList = memConnect.getDeputyIdList(classId);
+        if(!DeputyIdList.isEmpty()){
+            for(int deputyClassId : DeputyIdList){
+                delete(deputyClassId, tuple);
+            }
+        }
     }
 
 }

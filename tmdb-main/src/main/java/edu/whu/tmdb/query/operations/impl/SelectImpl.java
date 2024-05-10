@@ -353,18 +353,17 @@ public class SelectImpl implements edu.whu.tmdb.query.operations.Select {
     private void projectSelectExpression(SelectItem item, SelectResult entireResult,
                 SelectResult projectResult, TupleList resTupleList, int indexInResult) throws TMDBException {
         // TODO-task5
+        /********************************/
         SelectExpressionItem selectItem = (SelectExpressionItem) item;
         // 1.attrName赋值
-
         // 2.alias赋值
-
         // 3.resTupleList赋值
-        // ArrayList<String> TableColumn = new ArrayList<>();          // 含有两个元素的列表，结构为[tableName, columnName]
-        // 调用attributeParser();
-        // ArrayList<Object> dataList = (new Formula()).formulaExecute(selectItem.getExpression(), entireResult);  // 对表达式进行解析，获取该列的值
-        // 调用getIndexInEntireResult();   // 找到表达式对应属性在原元组对应的下标
-
+            // ArrayList<String> TableColumn = new ArrayList<>();          // 含有两个元素的列表，结构为[tableName, columnName]
+            // 调用attributeParser();
+            // ArrayList<Object> dataList = (new Formula()).formulaExecute(selectItem.getExpression(), entireResult);  // 对表达式进行解析，获取该列的值
+            // 调用getIndexInEntireResult();   // 找到表达式对应属性在原元组对应的下标
         // 4.剩余属性赋值
+        /********************************/
         
 
         // 1. 赋值 attrName

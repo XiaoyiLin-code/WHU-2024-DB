@@ -50,6 +50,10 @@ public class Main {
         while (true) {
             System.out.print("tmdb> ");
             sqlCommand = reader.readLine().trim();
+            sqlCommand = reader.readLine().trim();
+            /*For debug*/
+            System.out.println("Running:"+sqlCommand);
+            /*For debug end*/
             if ("exit".equalsIgnoreCase(sqlCommand)) {
                 break;
             } else if ("resetdb".equalsIgnoreCase(sqlCommand)) {

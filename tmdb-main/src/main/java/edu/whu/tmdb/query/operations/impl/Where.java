@@ -65,6 +65,16 @@ public class Where {
                 result = equalsToExpression((EqualsTo) expression, selectResult); break;
             case "Function":
                 result = function((Function)expression, selectResult); break;
+            case "OrExpression":
+                result = orExpression((OrExpression) expression, selectResult); break;
+            case "MinorThan":
+                result = minorThan((MinorThan) expression, selectResult); break;
+            case "MinorThanEquals":
+                result = minorThanEquals((MinorThanEquals) expression, selectResult); break;
+            case "GreaterThan":
+                result = greaterThan((GreaterThan) expression, selectResult); break;
+            case "GreaterThanEquals":
+                result = greaterThanEquals((GreaterThanEquals) expression, selectResult); break;
         }
         return result;
     }

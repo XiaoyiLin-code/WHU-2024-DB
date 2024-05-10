@@ -70,7 +70,7 @@ public class DeleteImpl implements Delete {
         //2. Delete tuples
         memConnect.DeleteTuple(tupleid);
 
-        //4. Recursively delete tuples from deputy classes
+        //3. Recursively delete tuples from deputy classes and biPointerTable
         ArrayList<Integer> DeputyIdList = memConnect.getDeputyIdList(classId);
         if (!DeputyIdList.isEmpty()) {
             for (int deputyClassId : DeputyIdList) {
@@ -80,7 +80,8 @@ public class DeleteImpl implements Delete {
                     if (biPointerTableItem.classid == classId
                             && biPointerTableItem.objectid == tupleid
                             && biPointerTableItem.deputyid == deputyClassId) {
-                        deputyTupleIdList.add(biPointerTableItem.deputyobjectid);
+                        deputyTupleIdList.add(biPointerTableItem.deputyobjectid);//add deputy tuple id
+                        MemConnect.getBiPointerTable().biPointerTableList.remove(biPointerTableItem);//delete from biPointerTable
                     }
                 }
                 if(!deputyTupleIdList.isEmpty()){

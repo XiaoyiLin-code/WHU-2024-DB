@@ -101,7 +101,28 @@ public class SelectImpl implements edu.whu.tmdb.query.operations.Select {
     }
 
     private SelectResult limit(int limit,SelectResult selectResult) {
-        // TODO-task9
+        // 确保限制值不为负数
+        if (limit < 0) {
+            // 如果需要，可以处理限制值为负数的情况
+            throw new IllegalArgumentException("限制不能为负数");
+        }
+
+        // 获取原始的 TupleList
+        TupleList originalTupleList = selectResult.getTpl();
+        List<Tuple> originalTuples = originalTupleList.tuplelist;
+
+        // 使用 Java 流将元组的数量限制到指定的 limit
+        List<Tuple> limitedTuples = originalTuples.stream()
+                .limit(limit)
+                .collect(Collectors.toList());
+
+        // 创建一个包含有限元组的新 TupleList
+        TupleList limitedTupleList = new TupleList();
+        limitedTupleList.tuplelist = limitedTuples;
+        limitedTupleList.tuplenum = limitedTuples.size();
+
+        // 使用有限的 TupleList 更新 SelectResult
+        selectResult.setTpl(limitedTupleList);
         return selectResult;
     }
 
@@ -344,6 +365,34 @@ public class SelectImpl implements edu.whu.tmdb.query.operations.Select {
         // 调用getIndexInEntireResult();   // 找到表达式对应属性在原元组对应的下标
 
         // 4.剩余属性赋值
+        
+
+        // 1. 赋值 attrName
+        String attrName = selectItem.getExpression().toString();
+
+        // 2. 赋值 alias
+        String alias = selectItem.getAlias() != null ? selectItem.getAlias().getName() : attrName;
+
+        // 3. 使用 Formula 执行表达式并获取结果
+        ArrayList<Object> dataList = (new Formula()).formulaExecute(selectItem.getExpression(), entireResult);
+
+        // 4. 找到表达式中涉及的属性在原元组对应的下标
+        ArrayList<String> tableColumn = new ArrayList<>(); // [tableName, columnName]
+        attributeParser(attrName, tableColumn);
+        int columnIndex = getIndexInEntireResult(entireResult, tableColumn.get(0), tableColumn.get(1));
+
+        // 将投影结果赋值到 projectResult
+        projectResult.getAttrname()[indexInResult] = attrName;
+        projectResult.getAlias()[indexInResult] = alias;
+        projectResult.getAttrid()[indexInResult] = indexInResult;
+        projectResult.getType()[indexInResult] = entireResult.getType()[columnIndex];
+
+        // 5. 将结果插入 resTupleList
+        for (int i = 0; i < resTupleList.tuplelist.size(); i++) {
+            Tuple tuple = resTupleList.tuplelist.get(i);
+            tuple.tuple[indexInResult] = dataList.get(i);
+            tuple.tupleIds[indexInResult] = entireResult.getTpl().tuplelist.get(i).tupleIds[columnIndex];
+        }
 
     }
 

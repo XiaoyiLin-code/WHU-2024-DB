@@ -387,10 +387,10 @@ public class MemConnect {
     public static List<ObjectTableItem> getObjectTableList() { return MemManager.objectTable.objectTableList; }
 
     //通过元组id获取ObjectTableItem
-    public static List<ObjectTableItem> getObjectTableItemByTuple(Tuple tuple) {
+    public static List<ObjectTableItem> getObjectTableItemByTuple(Integer tupleid) {
         List<ObjectTableItem> objectTableItems = new ArrayList<>();
             for (ObjectTableItem item : getObjectTableList()) {
-                if (item.tupleid == tuple.tupleId) {
+                if (item.tupleid == tupleid) {
                     objectTableItems.add(item);
                 }
         }

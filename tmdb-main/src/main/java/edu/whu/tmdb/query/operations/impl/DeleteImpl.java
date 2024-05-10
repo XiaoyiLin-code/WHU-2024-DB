@@ -23,8 +23,11 @@ import edu.whu.tmdb.query.operations.Select;
 import edu.whu.tmdb.query.operations.utils.MemConnect;
 import edu.whu.tmdb.query.operations.utils.SelectResult;
 
+import javax.swing.*;
+
 public class DeleteImpl implements Delete {
     private MemConnect memConnect;
+
     public DeleteImpl() {
         this.memConnect = MemConnect.getInstance(MemManager.getInstance());
     }
@@ -38,7 +41,8 @@ public class DeleteImpl implements Delete {
         // 1.获取符合where条件的所有元组
         Table table = deleteStmt.getTable();        // 获取需要删除的表名
         Expression where = deleteStmt.getWhere();   // 获取delete中的where表达式
-        String sql = "select * from " + table;;
+        String sql = "select * from " + table;
+        ;
         if (where != null) {
             sql += " where " + String.valueOf(where) + ";";
         }
@@ -50,34 +54,43 @@ public class DeleteImpl implements Delete {
         // 2.执行delete
         int classId = memConnect.getClassId(table.getName());
         for (Tuple tuple : selectResult.getTpl().tuplelist) {
-            delete(classId, tuple);
+            delete(classId, tuple.tupleId);
         }
     }
-
 
 
     /**
      * @param classId 表/类id
-     * @param tuple 要删除的元组
+     * @param tupleid 要删除的元组id
      */
-    public void delete(int classId,Tuple tuple) throws TMDBException, IOException {
+    public void delete(int classId, Integer tupleid) throws TMDBException, IOException {
         //1. Delete tuples from objtable
-        List<ObjectTableItem> tmp= MemConnect.getObjectTableItemByTuple(tuple);
+        List<ObjectTableItem> tmp = MemConnect.getObjectTableItemByTuple(tupleid);
         MemConnect.getObjectTable().objectTableList.removeAll(tmp);
-        //2. Delete tuples from biPointerTable
-        MemConnect.getBiPointerTable().biPointerTableList.removeIf(
-                biPointerTableItem ->
-                        biPointerTableItem.objectid == tuple.tupleId);
-        //3. Delete tuples
-        memConnect.DeleteTuple(tuple.tupleId);
+        //2. Delete tuples
+        memConnect.DeleteTuple(tupleid);
 
         //4. Recursively delete tuples from deputy classes
         ArrayList<Integer> DeputyIdList = memConnect.getDeputyIdList(classId);
-        if(!DeputyIdList.isEmpty()){
-            for(int deputyClassId : DeputyIdList){
-                delete(deputyClassId, tuple);
+        if (!DeputyIdList.isEmpty()) {
+            for (int deputyClassId : DeputyIdList) {
+                //choose all deputy tuple id from biPointerTable
+                List<Integer> deputyTupleIdList = new ArrayList<>();
+                for (BiPointerTableItem biPointerTableItem : MemConnect.getBiPointerTable().biPointerTableList) {
+                    if (biPointerTableItem.classid == classId
+                            && biPointerTableItem.objectid == tupleid
+                            && biPointerTableItem.deputyid == deputyClassId) {
+                        deputyTupleIdList.add(biPointerTableItem.deputyobjectid);
+                    }
+                }
+                if(!deputyTupleIdList.isEmpty()){
+                    for (Integer deputyTupleId : deputyTupleIdList) {
+                        delete(deputyClassId, deputyTupleId);
+                    }
+                }
             }
         }
     }
-
 }
+
+

@@ -131,7 +131,7 @@ public class CreateDeputyClassImpl implements CreateDeputyClass {
         InsertImpl insert=new InsertImpl();
         List<String> columns= Arrays.asList(selectResult.getAttrname());
         for(Tuple tuple:tpl.tuplelist){
-            int deputyTupleId= insert.execute(deputyId,columns,tuple);
+            int deputyTupleId= insert.execute(deputyId,columns,new Tuple(tuple.tuple));
             HashSet<Integer> origin = getOriginClass(selectResult);
             for(int origin_index:origin){
                 int classId=memConnect.getClassId(selectResult.getClassName()[origin_index]);

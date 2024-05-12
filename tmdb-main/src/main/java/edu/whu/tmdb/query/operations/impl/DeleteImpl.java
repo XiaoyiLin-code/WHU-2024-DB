@@ -77,16 +77,29 @@ public class DeleteImpl implements Delete {
         if (!DeputyIdList.isEmpty()) {
             for (int deputyClassId : DeputyIdList) {
                 //choose all deputy tuple id from biPointerTable
-                List<Integer> deputyTupleIdList = new ArrayList<>();
+                List<Integer> deputyTupleIdList = new ArrayList<>(); // 需要删除的元组，递归删除
                 List<BiPointerTableItem> biPointerTableList = MemConnect.getBiPointerTable().biPointerTableList;
-                for (BiPointerTableItem biPointerTableItem : biPointerTableList) {
+
+                for (int i = 0; i< biPointerTableList.size();i++){
+                    BiPointerTableItem biPointerTableItem = biPointerTableList.get(i);
                     if (biPointerTableItem.classid == classId
                             && biPointerTableItem.objectid == tupleid
                             && biPointerTableItem.deputyid == deputyClassId) {
                         deputyTupleIdList.add(biPointerTableItem.deputyobjectid);//add deputy tuple id
-                        MemConnect.getBiPointerTable().biPointerTableList.remove(biPointerTableItem);//delete from biPointerTable
+                        biPointerTableList.remove(i);//delete from biPointerTable
+                        i--;
                     }
                 }
+
+//                for (BiPointerTableItem biPointerTableItem : biPointerTableList) {
+//                    if (biPointerTableItem.classid == classId
+//                            && biPointerTableItem.objectid == tupleid
+//                            && biPointerTableItem.deputyid == deputyClassId) {
+//                        deputyTupleIdList.add(biPointerTableItem.deputyobjectid);//add deputy tuple id
+//                        MemConnect.getBiPointerTable().biPointerTableList.remove(biPointerTableItem);//delete from biPointerTable
+//                    }
+//                }
+
                 if(!deputyTupleIdList.isEmpty()){
                     for (Integer deputyTupleId : deputyTupleIdList) {
                         delete(deputyClassId, deputyTupleId);

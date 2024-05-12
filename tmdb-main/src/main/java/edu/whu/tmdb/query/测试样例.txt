@@ -14,7 +14,7 @@ select name, sum(salary) as b from faculty group by name;
 #############################Test 1 End#########################################
 
 #############################Test 2 Begin <passed> #############################
-#   where(=), update, delete, drop
+#   where(=,and,or), update, delete, create selectdeputy,show (Class,Deputy,Switching,Bipointer)table, drop
 create CLASS test (name char,age int, salary int);
 INSERT INTO test VALUES (aa,20,1000);
 INSERT INTO test VALUES (bb,30,8000);
@@ -23,15 +23,45 @@ INSERT INTO test VALUES ("dd",20,1000);
 INSERT INTO test VALUES ("ee",20,1000);
 INSERT INTO test VALUES ("ff",30,1000);
 
-INSERT INTO faculty VALUES (aa,20,1000);
-select * from faculty where name = 'aa';
-select * from faculty;
-UPDATE faculty SET name = 'aaa' WHERE name = 'aa';
-select * from faculty;
-DELETE FROM faculty WHERE name='aaa';
-select * from faculty;
+select * from test where name = 'aa';
+select * from test where name = 'bb' and salary = 8000;
+select * from test where name = 'bb' or salary = 8000;
+
+UPDATE test SET name = 'aaa' where name = 'aa';
+select * from test;
+
+delete from test where name = 'aaa';
+select * from test;
+
+create selectdeputy deputytest1 as select * from test where salary = 1000;
+select * from deputytest1;
+
+create selectdeputy deputytest2 as select name as name2, age as age2 where salary = 1000;
+select * from deputytest2;
+
+show ClassTable;
+show DeputyTable;
+show SwitchingTable;
+show BipointerTable;
+
+delete from test where name = 'aaa';
+select * from deputytest1;
+select * from deputytest2;
+show SwitchingTable;
+show BipointerTable;
+
+drop class deputytest1;
+show ClassTable;
+show DeputyTable;
+show SwitchingTable;
+show BipointerTable;
+
 drop class test;
-drop class faculty;
+show ClassTable;
+show DeputyTable;
+show SwitchingTable;
+show BipointerTable;
+
 #############################Test 2 End#########################################
 
 #############################Test 3 Begin <?> #############################
@@ -58,6 +88,7 @@ drop class tjoin1;
 drop class tjoin2;
 #############################Test 3 End#########################################
 
+######ABORTED######
 #############################Test 4 Begin <?> #############################
 # selectdeputy(测试内容不完善)
 create selectdeputy deputy as select name as n, age as a, salary as s from faculty, test;

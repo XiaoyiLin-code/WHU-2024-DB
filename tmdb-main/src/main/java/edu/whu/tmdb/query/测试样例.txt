@@ -32,11 +32,12 @@ select * from test;
 
 delete from test where name = 'aaa';
 select * from test;
+INSERT INTO test VALUES (aa,20,1000);
 
 create selectdeputy deputytest1 as select * from test where salary = 1000;
 select * from deputytest1;
 
-create selectdeputy deputytest2 as select name as name2, age as age2 where salary = 1000;
+create selectdeputy deputytest2 as select name as name2, age as age2 from test where salary = 1000;
 select * from deputytest2;
 
 show ClassTable;
@@ -44,7 +45,7 @@ show DeputyTable;
 show SwitchingTable;
 show BipointerTable;
 
-delete from test where name = 'aaa';
+delete from test where name = 'aa';
 select * from deputytest1;
 select * from deputytest2;
 show SwitchingTable;

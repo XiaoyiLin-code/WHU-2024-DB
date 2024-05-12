@@ -123,8 +123,9 @@ public class MemConnect {
                 return item.classid; // 找到匹配的表名，返回对应的类ID
             }
         }
-        // 如果遍历完成后没有找到匹配的表名，抛出异常
-        throw new TMDBException(ErrorList.CLASS_NAME_DOES_NOT_EXIST, "No class found with the name: " + tableName);
+        // 如果遍历完成后没有找到匹配的表名，抛出(-1): tjoin deputy class 需要的，而非直接报错
+        //throw new TMDBException(ErrorList.CLASS_NAME_DOES_NOT_EXIST, "No class found with the name: " + tableName);
+        return -1;
     }
 
     /**

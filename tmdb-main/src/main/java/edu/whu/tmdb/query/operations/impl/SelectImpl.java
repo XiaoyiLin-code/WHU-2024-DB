@@ -47,9 +47,10 @@ public class SelectImpl implements edu.whu.tmdb.query.operations.Select {
     @Override
     public SelectResult select(Object stmt) throws TMDBException, IOException {
         SelectBody selectBody = null;
-        if (stmt.getClass().getSimpleName().equals("Select")) {         // 不带子查询的类型转换
+        if (stmt.getClass().getSimpleName().equals("Select")) {         // 不带子查询的select
             selectBody = ((net.sf.jsqlparser.statement.select.Select)stmt).getSelectBody();
-        }else if (stmt.getClass().getSimpleName().equals("SubSelect")) {// 带子查询的类型转换
+        }
+        else if (stmt.getClass().getSimpleName().equals("SubSelect")) {// 带子查询的select
             selectBody = ((SubSelect)stmt).getSelectBody();
         }
 
@@ -59,7 +60,8 @@ public class SelectImpl implements edu.whu.tmdb.query.operations.Select {
             // 带union，except关键字的查询
             SetOperationList setOperationList = (SetOperationList) selectBody;
             return setOperation(setOperationList);
-        }else {     // 简单查询
+        }
+        else {     // 简单查询
             res = plainSelect(selectBody);
         }
         return res;

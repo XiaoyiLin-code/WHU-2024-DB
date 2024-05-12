@@ -209,11 +209,13 @@ public class Where {
         Expression right = expression.getRightExpression();
     
         // 对左右两边的表达式分别进行筛选
-        SelectResult selectResult1 = execute(left, selectResult);
-        SelectResult selectResult2 = execute(right, selectResult);
+        SelectResult selectResult1 = new SelectResult();
+        selectResult1 = execute(left, selectResult);
+        HashSet<Tuple> combinedSet = getTupleSet(selectResult1);
+        SelectResult selectResult2 = new SelectResult();
+        selectResult2 = execute(right, selectResult);
     
         // 将两个结果集合并，以保留满足任一条件的元组
-        HashSet<Tuple> combinedSet = getTupleSet(selectResult1);
         combinedSet.addAll(getTupleSet(selectResult2));
     
         // 从合并的结果集中构建 SelectResult 返回

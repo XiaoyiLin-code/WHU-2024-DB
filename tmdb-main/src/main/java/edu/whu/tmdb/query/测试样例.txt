@@ -12,7 +12,7 @@ SELECT name, AVG(salary) as b from faculty group by name;
 select name, sum(salary) as b from faculty group by name;
 #############################Test 1 End#########################################
 
-#############################Test 2 Begin <passed> #############################
+#############################Test 2 Begin <not passed> #############################
 #   where(=,and,or), update, delete, create selectdeputy,show (Class,Deputy,Switching,Bipointer)table, drop
 create CLASS test (name char,age int, salary int);
 INSERT INTO test VALUES (aa,20,1000);

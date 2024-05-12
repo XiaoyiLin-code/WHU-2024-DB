@@ -1,14 +1,20 @@
-CREATE CLASS company (name char,age int, salary int);
-INSERT INTO company VALUES (aa,20,1000);
-INSERT INTO company VALUES (bb,30,8000);
-INSERT INTO company VALUES (cc,30,8000);
-INSERT INTO company VALUES ("dd",20,1000);
-INSERT INTO company VALUES ("ee",20,1000);
-INSERT INTO company VALUES ("ff",30,1000);
-SELECT name from company UNION SELECT name from company;
-SELECT name, AVG(salary) as b from company group by name;
-select name, sum(salary) as b from company group by name;
+# 在全部测试完之后把faculty表改名为faculty
+#############################Test 1 Begin <passed> #############################
+#   create, insert, select, union, group by(avg, sum)
+CREATE CLASS faculty (name char,age int, salary int);
+INSERT INTO faculty VALUES (aa,20,1000);
+INSERT INTO faculty VALUES (bb,30,8000);
+INSERT INTO faculty VALUES (cc,30,8000);
+INSERT INTO faculty VALUES ("dd",20,1000);
+INSERT INTO faculty VALUES ("ee",20,1000);
+INSERT INTO faculty VALUES ("ff",30,1000);
+SELECT name from faculty UNION SELECT name from faculty;
+SELECT name, AVG(salary) as b from faculty group by name;
+select name, sum(salary) as b from faculty group by name;
+#############################Test 1 End#########################################
 
+#############################Test 2 Begin <passed> #############################
+#   where(=), update, delete, drop
 create CLASS test (name char,age int, salary int);
 INSERT INTO test VALUES (aa,20,1000);
 INSERT INTO test VALUES (bb,30,8000);
@@ -17,16 +23,19 @@ INSERT INTO test VALUES ("dd",20,1000);
 INSERT INTO test VALUES ("ee",20,1000);
 INSERT INTO test VALUES ("ff",30,1000);
 
-create CLASS engine (base_dir char);
-
-INSERT INTO company VALUES (aa,20,1000);
-select * from company where name = 'aa';
-select * from company;
-UPDATE company SET name = 'aaa' WHERE name = 'aa';
-DELETE FROM company WHERE name='aaa';
+INSERT INTO faculty VALUES (aa,20,1000);
+select * from faculty where name = 'aa';
+select * from faculty;
+UPDATE faculty SET name = 'aaa' WHERE name = 'aa';
+select * from faculty;
+DELETE FROM faculty WHERE name='aaa';
+select * from faculty;
 drop class test;
-drop class company;
+drop class faculty;
+#############################Test 2 End#########################################
 
+#############################Test 3 Begin <?> #############################
+# tjoindeputyclass(测试内容不完善)
 CREATE CLASS mobile_phone_traj (trajectory_id int,user_id int, trajectory char);
 INSERT INTO mobile_phone_traj VALUES (2,2,0-1);
 INSERT INTO mobile_phone_traj VALUES (1,2,0-1-1-2-2-3);
@@ -41,74 +50,69 @@ select * from watch_traj;
 
 create tjoindeputyclass tjoin1 as select * from mobile_phone_traj intersect select * from watch_traj;
 create tjoindeputyclass tjoin2 as select * from mobile_phone_traj union select * from watch_traj;
-select * from tjoin;
+select * from tjoin1;
+select * from tjoin2;
+drop class mobile_phone_traj;
+drop class watch_traj;
+drop class tjoin1;
+drop class tjoin2;
+#############################Test 3 End#########################################
 
-create selectdeputy deputy as select name as n, age as a, salary as s from company, test;
-create selectdeputy deputy as select * from company limit 1;
+#############################Test 4 Begin <?> #############################
+# selectdeputy(测试内容不完善)
+create selectdeputy deputy as select name as n, age as a, salary as s from faculty, test;
+create selectdeputy deputy as select * from faculty limit 1;
+create selectdeputy deputy as select name as n, age as a, salary as s from faculty;
+CREATE SELECTDEPUTY nands SELECT name AS n,salary+10 AS s FROM faculty WHERE salary=1000;
+INSERT INTO faculty VALUES ("gg",20,3000);
+DELETE FROM faculty WHERE name="aa";
+UPDATE faculty SET salary=8000 WHERE name="gg";
+SELECT n1 AS names,birth AS births,s1 AS salarys FROM nandb WHERE n1="gg";
 
+#############################Test 4 End#########################################
 
+#############################Test 5 Begin <?> #############################
+# semi join(测试内容不完善)
+select name,test.age from faculty left join test on faculty.name=test.name;
+select faculty.name,test.name from faculty right join test on faculty.name=test.name;
+#############################Test 5 End#########################################
 
-select name,test.age from company left join test on company.name=test.name;
-select company.name,test.name from company right join test on company.name=test.name;
-
+#############################Test 6 Begin <?> ##################################
+#uniondeputy(测试内容不完善)
 createImpl uniondeputy uniondeputyclass as select .. from .. where.. union select .. from.. where..
+#############################Test 6 End#########################################
 
+#############################Test 7 Begin <?> ##################################
+# where(复杂类型)
 select 1 from table where a="aa" and b=10 or c=11 and name in (10,11);
+select name from faculty where age=20 and salary=1000;
+select * from faculty where c in ('aa','bb');
+select name from faculty where name in (select name from faculty);
+#############################Test 7 End#########################################
 
-select name from company where age=20 and salary=1000;
+#############################Test 8 Begin <?> ##################################
+# select (a+b)类型
+select age+salary as a from faculty;
+################################################################################
 
-select * from company where c in ('aa','bb');
-select name from company where name in (select name from company);
-
-select age+salary as a from company;
-
-select name from company union select name from test;
-select * from company;
-select company.*,test.name from company left join test on company.name=test.name;
-select * from company left join test on company.name=test.name;
-
+#############################Test 9 Begin <?> ##################################
+# where(还有> 复杂从句的类型)
 select * from table where a=1 and b>2 and c in ('aa','bb');
-select name from company as c where c.age*c.age+c.age=420 and salary=1000
+select name from faculty as c where c.age*c.age+c.age=420 and salary=1000
 and (age+c.age)/c.age=2 and c.salary-c.age=980 and c.salary%c.age=0;
 
-select name from company as c where c.age*c.age+c.age=420 and salary=1000;
+select name from faculty as c where c.age*c.age+c.age=420 and salary=1000;
+##############################################################################
 
+#############################Test 10 Begin <?> ##################################
+# union
 INSERT INTO UNIONTEST VALUES ("aa",20,1000);
 INSERT INTO UNIONTEST VALUES ("bb",30,8000);
 INSERT INTO UNIONTEST VALUES ("cc",30,8000);
 
-SELECT * FROM UNIONTEST UNION ALL SELECT * FROM company;
+SELECT * FROM UNIONTEST UNION ALL SELECT * FROM faculty;
 
-SELECT name AS company from company where age = 20 UNION SELECT name AS n2 from company where age = 30;
-
-create selectdeputy deputy as select name as n, age as a, salary as s from company;
-
-CREATE SELECTDEPUTY nands SELECT name AS n,salary+10 AS s FROM company WHERE salary=1000;
-
-//����Ǩ��
-//��
-INSERT INTO company VALUES ("gg",20,3000);
-//ɾ
-DELETE FROM company WHERE name="aa";
-//��
-UPDATE company SET salary=8000 WHERE name="gg";
-
-SELECT n1 AS names,birth AS births,s1 AS salarys FROM nandb WHERE n1="gg";
-
-
-
-//ɾ����
-DROP CLASS nandb;
-//ɾ���ࣨͬʱɾ�������ࣩ
-DROP CLASS company; 
-
-
-
-
-
-
-
-
-
+SELECT name AS faculty from faculty where age = 20 UNION SELECT name AS n2 from faculty where age = 30;
+############################Test 10 End#########################################
 
 

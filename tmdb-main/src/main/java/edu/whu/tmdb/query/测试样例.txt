@@ -7,7 +7,7 @@ INSERT INTO company VALUES ("ee",20,1000);
 INSERT INTO company VALUES ("ff",30,1000);
 SELECT name from company UNION SELECT name from company;
 SELECT name, AVG(salary) as b from company group by name;
-select name, sum(salary) as b from company group by name; //这一句有问题
+select name, sum(salary) as b from company group by name;
 
 create CLASS test (name char,age int, salary int);
 INSERT INTO test VALUES (aa,20,1000);
@@ -27,20 +27,22 @@ DELETE FROM company WHERE name='aaa';
 drop class test;
 drop class company;
 
-select * from mobile_phone_traj;
-select * from watch_traj;
-select * from tjoin;
 CREATE CLASS mobile_phone_traj (trajectory_id int,user_id int, trajectory char);
-CREATE CLASS traj (traj_id int,user_id char, traj char);
-
-INSERT INTO traj VALUES (2,2,0|1);
-INSERT INTO mobile_phone_traj VALUES (2,2asdfasdf,0|1);
+INSERT INTO mobile_phone_traj VALUES (2,2,0-1);
 INSERT INTO mobile_phone_traj VALUES (1,2,0-1-1-2-2-3);
 INSERT INTO mobile_phone_traj VALUES (1,2,0-1-1-2-2-3-3-4-4-5);
-CREATE CLASS watch_traj (trajectory_id int,user_id int, trajectory char);
-create tjoindeputyclass tjoin as select * from mobile_phone_traj intersect select * from watch_traj;
+INSERT INTO mobile_phone_traj VALUES (1,2,0-1-2-2-2-3);
+select * from mobile_phone_traj;
 
-select * from traj1, traj2, traj3;
+CREATE CLASS watch_traj (trajectory_id int,user_id int, trajectory char);
+INSERT INTO watch_traj VALUES (1,2,3-4-5);
+INSERT INTO watch_traj VALUES (1,2,0-1-1-2-2-3-3-4-4-5);
+select * from watch_traj;
+
+create tjoindeputyclass tjoin1 as select * from mobile_phone_traj intersect select * from watch_traj;
+create tjoindeputyclass tjoin2 as select * from mobile_phone_traj union select * from watch_traj;
+select * from tjoin;
+
 create selectdeputy deputy as select name as n, age as a, salary as s from company, test;
 create selectdeputy deputy as select * from company limit 1;
 

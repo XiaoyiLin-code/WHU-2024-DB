@@ -1,4 +1,3 @@
-# 在全部测试完之后把faculty表改名为faculty
 #############################Test 1 Begin <passed> #############################
 #   create, insert, select, union, group by(avg, sum)
 CREATE CLASS faculty (name char,age int, salary int);

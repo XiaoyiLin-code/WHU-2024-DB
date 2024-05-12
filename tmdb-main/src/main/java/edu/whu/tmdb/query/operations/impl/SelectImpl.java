@@ -524,7 +524,7 @@ public class SelectImpl implements edu.whu.tmdb.query.operations.Select {
         return getSelectResult(classTableItemList,tupleList);
     }
 
-    //进行union这种操作的方法
+    //进行union/intersect/except操作
     public SelectResult setOperation(SetOperationList setOperationList) throws TMDBException, IOException {
         SelectResult selectResult=new SelectResult();
         //提取出不同的select

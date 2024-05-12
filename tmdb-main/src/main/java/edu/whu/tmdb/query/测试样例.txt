@@ -74,7 +74,7 @@ INSERT INTO mobile_phone_traj VALUES (1,2,0-1-2-2-2-3);
 select * from mobile_phone_traj;
 
 CREATE CLASS watch_traj (trajectory_id int,user_id int, trajectory char);
-INSERT INTO watch_traj VALUES (1,2,3-4-5);
+INSERT INTO watch_traj VALUES (1,2,2-3-4-5);
 INSERT INTO watch_traj VALUES (1,2,0-1-1-2-2-3-3-4-4-5);
 select * from watch_traj;
 

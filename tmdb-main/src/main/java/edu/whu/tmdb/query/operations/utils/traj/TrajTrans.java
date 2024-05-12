@@ -16,25 +16,25 @@ public class TrajTrans {
         String temps="";
         for (int k = 0; k < list.size()-1; k++) {
             Coordinate coordinate = list.get(k);
-            temps+=coordinate.lat+"|"+coordinate.lng+"|";
+            temps+=coordinate.lat+"-"+coordinate.lng+"-";
         }
-        temps+=list.get(list.size()-1).lat+"|"
+        temps+=list.get(list.size()-1).lat+"-"
                 +list.get(list.size()-1).lng;
         return temps;
     }
 
     public static List<TrajEntry> getTraj(String s){
-        String[] rightSplit= s.split("\\|");
+        String[] rightSplit= s.split("-");
         List<TrajEntry> Traj=new ArrayList<>();
-        for (int k = 0; k < rightSplit.length; k+=2) {
-            TrajEntry coordinate = new Coordinate(Double.parseDouble(rightSplit[k+1]), Double.parseDouble(rightSplit[k]));
+        for (int k = 0; k < rightSplit.length; k+=2) { // 这里跑trajectory的时候越界了。 trajectory是啥？ 为什么要这样跑？
+            TrajEntry coordinate = new Coordinate(Double.parseDouble(rightSplit[k]),Double.parseDouble(rightSplit[k+1]));
             Traj.add(coordinate);
         }
         return Traj;
     }
 
     public static String getTorchTraj(String s){
-        String[] split = s.split("\\|");
+        String[] split = s.split("-");
         StringBuilder sb=new StringBuilder("[");
         for (int i = 0; i < split.length-2; i+=2) {
             sb.append("[")
@@ -54,7 +54,7 @@ public class TrajTrans {
     }
 
     public static String getTmdbTraj(String s){
-        return s.replace("[","").replace("]","").replace(",","|");
+        return s.replace("[","").replace("]","").replace(",","-");
     }
 
     public static SelectResult getSelectResultByTrajList(List<Trajectory<TrajEntry>> list, SelectResult selectResult){

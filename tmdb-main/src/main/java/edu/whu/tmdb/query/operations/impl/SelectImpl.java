@@ -379,6 +379,9 @@ public class SelectImpl implements edu.whu.tmdb.query.operations.Select {
         ArrayList<String> tableColumn = new ArrayList<>(); // [tableName, columnName]
         attributeParser(attrName, tableColumn);
         int columnIndex = getIndexInEntireResult(entireResult, tableColumn.get(0), tableColumn.get(1));
+        if (columnIndex == -1) {
+            throw new TMDBException(ErrorList.COLUMN_NAME_DOES_NOT_EXIST, tableColumn.get(1));
+        }
 
         // 将投影结果赋值到 projectResult
         projectResult.getAttrname()[indexInResult] = attrName;

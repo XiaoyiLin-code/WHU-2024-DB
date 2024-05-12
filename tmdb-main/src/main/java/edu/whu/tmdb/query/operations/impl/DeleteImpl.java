@@ -65,8 +65,10 @@ public class DeleteImpl implements Delete {
      */
     public void delete(int classId, Integer tupleid) throws TMDBException, IOException {
         //1. Delete tuples from objtable
-        List<ObjectTableItem> tmp = MemConnect.getObjectTableItemByTuple(tupleid);
-        MemConnect.getObjectTable().objectTableList.removeAll(tmp);
+        List<ObjectTableItem> objlist = MemConnect.getObjectTableItemByTuple(tupleid);
+        List<Integer> objidlist = new ArrayList<>();
+
+        MemConnect.getObjectTable().objectTableList.removeAll(objlist);
         //2. Delete tuples
         memConnect.DeleteTuple(tupleid);
 

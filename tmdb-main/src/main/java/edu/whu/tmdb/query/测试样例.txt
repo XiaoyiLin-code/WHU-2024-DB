@@ -14,6 +14,7 @@ select name, sum(salary) as b from faculty group by name;
 
 #############################Test 2 Begin <passed> #############################
 #   where(=,and,or), update, delete, create selectdeputy,show (Class,Deputy,Switching,Bipointer)table, drop
+#   测试了代理类的删除自动更新
 create CLASS test (name char,age int, salary int);
 INSERT INTO test VALUES (aa,20,1000);
 INSERT INTO test VALUES (bb,30,8000);
@@ -89,20 +90,36 @@ drop class tjoin1;
 drop class tjoin2;
 #############################Test 3 End#########################################
 
-######ABORTED######
 #############################Test 4 Begin <?> #############################
-# selectdeputy(测试内容不完善)
-create selectdeputy deputy as select name as n, age as a, salary as s from faculty, test;
-create selectdeputy deputy as select * from faculty limit 1;
+# selectdeputy:代理类的增、改, 跨类查询
+CREATE CLASS faculty (name char,age int, salary int);
+INSERT INTO faculty VALUES (faa,20,1000);
+INSERT INTO faculty VALUES (fbb,30,8000);
+INSERT INTO faculty VALUES (fcc,30,8000);
+INSERT INTO faculty VALUES ("fdd",20,1000);
+INSERT INTO faculty VALUES ("fee",20,1000);
+INSERT INTO faculty VALUES ("fff",30,1000);
+
 create selectdeputy deputy as select name as n, age as a, salary as s from faculty;
-CREATE SELECTDEPUTY nands SELECT name AS n,salary+10 AS s FROM faculty WHERE salary=1000;
+select * from deputy;
+
 INSERT INTO faculty VALUES ("gg",20,3000);
-DELETE FROM faculty WHERE name="aa";
-UPDATE faculty SET salary=8000 WHERE name="gg";
+select * from deputy;
+
+UPDATE faculty SET salary=8000 WHERE name= '"gg"';
+select * from deputy;
+
+CREATE SELECTDEPUTY nands as SELECT name as n,salary+10 AS s FROM faculty WHERE salary=1000;
+select * from nands;
+
+create selectdeputy deputy as select name as n, age as a, salary as s from faculty, test;
+select * from deputy;
+
 SELECT n1 AS names,birth AS births,s1 AS salarys FROM nandb WHERE n1="gg";
 
 #############################Test 4 End#########################################
 
+######ABORTED######
 #############################Test 5 Begin <?> #############################
 # semi join(测试内容不完善)
 select name,test.age from faculty left join test on faculty.name=test.name;

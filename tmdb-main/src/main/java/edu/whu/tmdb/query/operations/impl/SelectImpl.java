@@ -20,6 +20,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+import java.util.stream.*;
 
 import edu.whu.tmdb.storage.memory.SystemTable.ObjectTableItem;
 import edu.whu.tmdb.storage.memory.Tuple;
@@ -390,12 +391,16 @@ public class SelectImpl implements edu.whu.tmdb.query.operations.Select {
         projectResult.getAlias()[indexInResult] = alias;
         projectResult.getAttrid()[indexInResult] = indexInResult;
         projectResult.getType()[indexInResult] = entireResult.getType()[columnIndex];
+        projectResult.getClassName()[indexInResult] = entireResult.getClassName()[columnIndex];
 
         // 5. 将结果插入 resTupleList
         for (int i = 0; i < resTupleList.tuplelist.size(); i++) {
             Tuple tuple = resTupleList.tuplelist.get(i);
             tuple.tuple[indexInResult] = dataList.get(i);
+            tuple.tupleSize = tuple.tuple.length;
             tuple.tupleIds[indexInResult] = entireResult.getTpl().tuplelist.get(i).tupleIds[columnIndex];
+            tuple.tupleId=entireResult.getTpl().tuplelist.get(i).tupleId;
+            tuple.classId=entireResult.getTpl().tuplelist.get(i).classId;
         }
 
     }

@@ -112,9 +112,6 @@ select * from deputy;
 CREATE SELECTDEPUTY nands as SELECT name as n,salary+10 AS s FROM faculty WHERE salary=1000;
 select * from nands;
 
-create selectdeputy deputy as select name as n, age as a, salary as s from faculty, test;
-select * from deputy;
-
 SELECT n1 AS names,birth AS births,s1 AS salarys FROM nandb WHERE n1="gg";
 
 #############################Test 4 End#########################################
@@ -128,7 +125,23 @@ select faculty.name,test.name from faculty right join test on faculty.name=test.
 
 #############################Test 6 Begin <?> ##################################
 #uniondeputy(测试内容不完善)
-createImpl uniondeputy uniondeputyclass as select .. from .. where.. union select .. from.. where..
+CREATE CLASS faculty (name char,age int, salary int);
+INSERT INTO faculty VALUES (aa,20,1000);
+INSERT INTO faculty VALUES (bb,30,8000);
+INSERT INTO faculty VALUES (cc,30,8000);
+INSERT INTO faculty VALUES (dd,20,1000);
+INSERT INTO faculty VALUES (ee,20,1000);
+INSERT INTO faculty VALUES (ff,30,1000);
+
+create CLASS test (name char,age int, salary int);
+INSERT INTO test VALUES (aa,20,1000);
+INSERT INTO test VALUES (bb,30,8000);
+INSERT INTO test VALUES (cc,30,8000);
+INSERT INTO test VALUES (dd,20,1000);
+INSERT INTO test VALUES (gg,20,1000);
+INSERT INTO test VALUES (hh,30,1000);
+
+create uniondeputy udetest as select * from faculty where salary >= 500  and salary <= 1000 union select * from test where salary < 5000;
 #############################Test 6 End#########################################
 
 #############################Test 7 Begin <?> ##################################
@@ -164,4 +177,6 @@ SELECT * FROM UNIONTEST UNION ALL SELECT * FROM faculty;
 SELECT name AS faculty from faculty where age = 20 UNION SELECT name AS n2 from faculty where age = 30;
 ############################Test 10 End#########################################
 
-
+# 单句嵌套代理类（最简单的方法：直接不允许这样做）
+create selectdeputy deputy as select name as n, age as a, salary as s from faculty, test;
+select * from deputy;

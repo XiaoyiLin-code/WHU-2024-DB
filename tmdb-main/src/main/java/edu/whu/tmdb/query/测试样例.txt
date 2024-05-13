@@ -26,6 +26,7 @@ select * from test where name = 'aa';
 select * from test where name = 'bb' and salary = 8000;
 select * from test where name = 'bb' or salary = 8000;
 
+insert into test values (aa,30,1000);
 UPDATE test SET name = 'aaa' where name = 'aa';
 select * from test;
 
@@ -47,8 +48,8 @@ show BipointerTable
 delete from test where name = 'aa';
 select * from deputytest1;
 select * from deputytest2;
-show SwitchingTable;
-show BipointerTable;
+show SwitchingTable
+show BipointerTable
 
 drop class deputytest1
 show ClassTable

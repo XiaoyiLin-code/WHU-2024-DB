@@ -209,8 +209,10 @@ public class Where {
         Expression right = expression.getRightExpression();
     
         // 对左右两边的表达式分别进行筛选
+        SelectResult SelectResult_tmp = new SelectResult(selectResult.getTpl(), selectResult.getClassName(), selectResult.getAttrname(), selectResult.getAlias(), selectResult.getAttrid(), selectResult.getType());
+        SelectResult_tmp.setTpl(selectResult.getTpl());
         SelectResult selectResult1 = new SelectResult();
-        selectResult1 = execute(left, selectResult);
+        selectResult1 = execute(left, SelectResult_tmp);
         HashSet<Tuple> combinedSet = getTupleSet(selectResult1);
         SelectResult selectResult2 = new SelectResult();
         selectResult2 = execute(right, selectResult);

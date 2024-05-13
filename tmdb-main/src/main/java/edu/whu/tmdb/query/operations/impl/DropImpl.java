@@ -39,11 +39,12 @@ public class DropImpl implements Drop {
 
     public void drop(int classId) {
         // TODO-task4
-        ArrayList<Integer> deputyClassIdList = new ArrayList<>();   // 存储该类对应所有代理类id
-
+        //首先删除自身类
         dropClassTable(classId);                            // 1.删除ClassTableItem
-        dropDeputyClassTable(classId, deputyClassIdList);   // 2.获取代理类id并在表中删除
-        dropBiPointerTable(classId);                        // 3.删除 源类/对象<->代理类/对象 的双向关系表
+        // 接下来删除相关的代理类
+        ArrayList<Integer> deputyClassIdList = new ArrayList<>();   // 存储该类对应所有代理类id
+        dropDeputyClassTable(classId, deputyClassIdList);   // 2.在DeputyTable表中获取代理类id并删除DeputyTableItem
+        dropBiPointerTable(classId);                        // 3.删除BiPointerTable
         dropSwitchingTable(classId);                        // 4.删除switchingTable
         dropObjectTable(classId);                           // 5.删除已创建的源类对象
 
@@ -85,6 +86,9 @@ public class DropImpl implements Drop {
                 deputyClassIdList.add(item.deputyid);
                 iterator.remove();  // Remove the item from the list
             }
+            else if (item.deputyid == classId) {
+                iterator.remove();  // Remove the item from the list
+            }
         }
 
         // Optionally, check if any deputies were found and removed
@@ -105,6 +109,7 @@ public class DropImpl implements Drop {
     private void dropBiPointerTable(int classId) {
         // Attempt to remove entries from the bi-pointer table that match the given classId
         boolean removed = MemConnect.getBiPointerTableList().removeIf(item -> item.classid == classId);
+        MemConnect.getBiPointerTableList().removeIf(item -> item.deputyid == classId);
 
         // Check if any items were actually removed
         if (!removed) {
@@ -125,6 +130,7 @@ public class DropImpl implements Drop {
 
         // Use the removeIf method to remove all entries with the specified classId
         boolean removed = switchingTableList.removeIf(item -> item.oriId == classId);
+        switchingTableList.removeIf(item -> item.deputyId == classId);
 
         // Optionally, handle the case where no items were found (and thus nothing was removed)
         if (!removed) {

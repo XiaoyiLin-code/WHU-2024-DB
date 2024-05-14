@@ -162,7 +162,7 @@ public class InsertImpl implements Insert {
                         // 这里需要修改,应该先join， 然后再插入join的结果
                         List<String> deputyColumns = memConnect.getColumns(deputyClassId);    // join的结果的属性名列表
                         Integer anotherClassId = memConnect.getAnotherOriginID(deputyClassId, classId);    // join的结果的另一个源类id
-                        List<Tuple> deputyTupleList = getDeputyJoinTupleList(deputyClassId,tuple, anotherClassId,select);    // 获取join的结果
+                        List<Tuple> deputyTupleList = getDeputyJoinTupleList(classId,tuple, anotherClassId,select);    // 获取join的结果
                         for (Tuple deputyTuple : deputyTupleList) {
                             int DeputyTupleId = execute(deputyClassId, deputyColumns, deputyTuple);
                             MemConnect.getBiPointerTableList().add(new BiPointerTableItem(classId, tupleid, deputyClassId, DeputyTupleId));
@@ -184,15 +184,12 @@ public class InsertImpl implements Insert {
      * @throws TMDBException If no class is found with the given id, throw an exception
      */
 
-
-
     public List<Tuple> getDeputyJoinTupleList(int thisClassID,Tuple tuple, int anotherClassId, SelectImpl select) throws TMDBException {
         List<Tuple> deputyInsertTupleList = new ArrayList<>(); //Result
 
         //获取另外一个类的所有Tuple->SelectResult
         TupleList anothertuple = new TupleList();
         List<ObjectTableItem> objs= MemConnect.getObjectTableList();
-        PlainSelect plainSelect = new PlainSelect();
         for (ObjectTableItem obj : objs) {
             if (obj.classid == anotherClassId) {
                 anothertuple.addTuple(memConnect.GetTuple(obj.tupleid));

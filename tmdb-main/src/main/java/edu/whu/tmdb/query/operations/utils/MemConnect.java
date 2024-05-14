@@ -393,7 +393,7 @@ public class MemConnect {
         List<DeputyTableItem> deputyTableItems = getDeputyTableList(); // Assuming this method returns a list of all deputy table entries
         for (DeputyTableItem item : deputyTableItems) {
             if (item.deputyid == deputyId && item.originid != originId1) {
-                return item.deputyid; // Return the origin class for the deputy class
+                return item.originid; // Return the origin class for the deputy class
             }
         }
         // If no deputy class is found with the provided ID, throw an exception

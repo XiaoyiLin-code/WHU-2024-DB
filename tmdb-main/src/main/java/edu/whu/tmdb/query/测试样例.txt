@@ -112,19 +112,24 @@ select * from deputy;
 CREATE SELECTDEPUTY nands as SELECT name as n,salary+10 AS s FROM faculty WHERE salary=1000;
 select * from nands;
 
-SELECT n1 AS names,birth AS births,s1 AS salarys FROM nandb WHERE n1="gg";
-
 #############################Test 4 End#########################################
 
 ######ABORTED######
 #############################Test 5 Begin <?> #############################
-# semi join(测试内容不完善)
-select name,test.age from faculty left join test on faculty.name=test.name;
-select faculty.name,test.name from faculty right join test on faculty.name=test.name;
+# joindeputy
+create class student (id int, name char);
+INSERT INTO student VALUES (1,aa);
+INSERT INTO student VALUES (2,bb);
+
+create class faculty (id int, salary int);
+INSERT INTO faculty VALUES (1,1000);
+INSERT INTO faculty VALUES (3,8000);
+
+CREATE JOINDEPUTYCLASS assistant as (select student.name, salary from student,faculty where student.id = faculty.id);
 #############################Test 5 End#########################################
 
 #############################Test 6 Begin <?> ##################################
-#uniondeputy(测试内容不完善)
+#uniondeputy
 CREATE CLASS faculty (name char,age int, salary int);
 INSERT INTO faculty VALUES (aa,20,1000);
 INSERT INTO faculty VALUES (bb,30,8000);
@@ -141,6 +146,7 @@ INSERT INTO test VALUES (dd,20,1000);
 INSERT INTO test VALUES (gg,20,1000);
 INSERT INTO test VALUES (hh,30,1000);
 
+create uniondeputy udetest as select * from faculty union select * from test;
 create uniondeputy udetest as select * from faculty where salary >= 500  and salary <= 1000 union select * from test where salary < 5000;
 #############################Test 6 End#########################################
 

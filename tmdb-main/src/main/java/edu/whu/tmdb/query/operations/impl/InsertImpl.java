@@ -4,9 +4,12 @@ import edu.whu.tmdb.query.operations.Exception.ErrorList;
 import edu.whu.tmdb.query.operations.Select;
 import edu.whu.tmdb.storage.memory.MemManager;
 import edu.whu.tmdb.storage.memory.SystemTable.ClassTableItem;
+import net.sf.jsqlparser.JSQLParserException;
+import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,6 +27,7 @@ import edu.whu.tmdb.storage.memory.TupleList;
 import net.sf.jsqlparser.statement.select.FromItem;
 import net.sf.jsqlparser.statement.select.Join;
 import net.sf.jsqlparser.statement.select.PlainSelect;
+import net.sf.jsqlparser.statement.select.SelectBody;
 
 public class InsertImpl implements Insert {
     private MemConnect memConnect;
@@ -163,10 +167,11 @@ public class InsertImpl implements Insert {
                         // 这里需要修改,应该先join， 然后再插入join的结果
                         List<String> deputyColumns = memConnect.getColumns(deputyClassId);    // join的结果的属性名列表
                         Integer anotherClassId = memConnect.getAnotherOriginID(deputyClassId, classId);    // join的结果的另一个源类id
-                        List<Tuple> deputyTupleList = getDeputyJoinTupleList(classId,tuple, anotherClassId,select);    // 获取join的结果
+                        List<Tuple> deputyTupleList = getDeputyJoinTupleList(classId,tuple, anotherClassId,select,deputyDetailRule);    // 获取join的结果
                         for (Tuple deputyTuple : deputyTupleList) {
                             int DeputyTupleId = execute(deputyClassId, deputyColumns, deputyTuple);
                             MemConnect.getBiPointerTableList().add(new BiPointerTableItem(classId, tupleid, deputyClassId, DeputyTupleId));
+                            //MemConnect.getBiPointerTableList().add(new BiPointerTableItem(anotherClassId, tupleid, deputyClassId, DeputyTupleId));
                         }
                     }
 
@@ -184,7 +189,7 @@ public class InsertImpl implements Insert {
      * @return The list of joined tuples
      * @throws TMDBException If no class is found with the given id, throw an exception
      */
-    public List<Tuple> getDeputyJoinTupleList(int thisClassID,Tuple tuple, int anotherClassId, SelectImpl select) throws TMDBException {
+    public List<Tuple> getDeputyJoinTupleList(int thisClassID,Tuple tuple, int anotherClassId, SelectImpl select,String DeputyDetailRule) throws TMDBException {
         List<Tuple> deputyInsertTupleList = new ArrayList<>(); //Result
 
         //获取另外一个类的所有Tuple->SelectResult
@@ -204,8 +209,34 @@ public class InsertImpl implements Insert {
         SelectResult  left =  getSelectResultInformation(thisClassID, classTableItems, thisTupleList);
 
         SelectImpl selectImpl = new SelectImpl();
-        // Assuming this method exists and returns the list of all class table entries
-        //如何join?
+        try {
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(DeputyDetailRule.getBytes());
+            Statement stmt = CCJSqlParserUtil.parse(byteArrayInputStream);
+            SelectBody selectBody = ((net.sf.jsqlparser.statement.select.Select)stmt).getSelectBody();
+            PlainSelect plainSelect = (PlainSelect) selectBody;
+            ArrayList<ClassTableItem> leftClassTableItemList = memConnect.copyClassTableList(left.getClassName()[0]);
+            ArrayList<ClassTableItem> rightClassTableItemList = memConnect.copyClassTableList(right.getClassName()[0]);
+            leftClassTableItemList.addAll(rightClassTableItemList);
+            if(!(plainSelect.getJoins() == null)){
+                for (Join join:plainSelect.getJoins()) {
+                    TupleList tupleList = selectImpl.join(left,right,join);
+                    deputyInsertTupleList = tupleList.tuplelist;
+                    //接下来还需要选择和投影捏
+                    left=select.getSelectResult(leftClassTableItemList, tupleList);
+                }
+            }
+            if (plainSelect.getWhere() != null){
+                Where where = new Where();
+                left = where.where(plainSelect, left);
+            }
+            left = select.projection(plainSelect, left);
+        }
+        catch (JSQLParserException e) {
+            System.out.println("syntax error");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        deputyInsertTupleList = left.getTpl().tuplelist;
         return deputyInsertTupleList;
     }
 

@@ -147,7 +147,7 @@ public class InsertImpl implements Insert {
                 int deputyClassId = DeputyIdList.get(i);
                 String[] deputyRules = DeputyTypeList[i];
 
-                for (String deputyRule : deputyRules){
+                for (String deputyRule: deputyRules){
                     if (deputyRule.equals("0")) { //Select Deputy
                         HashMap<String, String> attrNameHashMap = getAttrNameHashMap(classId, deputyClassId, columns);
                         List<String> deputyColumns = getDeputyColumns(attrNameHashMap, columns);    // 根据源类属性名列表获取代理类属性名列表
@@ -159,6 +159,7 @@ public class InsertImpl implements Insert {
                     }
 
                     else if(deputyRule.equals("1")){ //Join Deputy
+                        String deputyDetailRule = memConnect.getDetailDeputyRule(deputyClassId);    // 获取join的详细规则
                         // 这里需要修改,应该先join， 然后再插入join的结果
                         List<String> deputyColumns = memConnect.getColumns(deputyClassId);    // join的结果的属性名列表
                         Integer anotherClassId = memConnect.getAnotherOriginID(deputyClassId, classId);    // join的结果的另一个源类id
@@ -183,7 +184,6 @@ public class InsertImpl implements Insert {
      * @return The list of joined tuples
      * @throws TMDBException If no class is found with the given id, throw an exception
      */
-
     public List<Tuple> getDeputyJoinTupleList(int thisClassID,Tuple tuple, int anotherClassId, SelectImpl select) throws TMDBException {
         List<Tuple> deputyInsertTupleList = new ArrayList<>(); //Result
 

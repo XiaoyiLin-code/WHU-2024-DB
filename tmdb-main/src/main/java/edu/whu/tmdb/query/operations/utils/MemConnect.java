@@ -508,6 +508,16 @@ public class MemConnect {
         return objectTableItems;
     }
 
+    public String getDetailDeputyRule(int deputyId) {
+        List<SwitchingTableItem> SwitchingTableList = MemManager.switchingTable.switchingTableList;
+        for (SwitchingTableItem item : SwitchingTableList) {
+            if (item.deputyId== deputyId) {
+                return item.rule.substring(1);
+            }
+        }
+        return "";
+    }
+
     public static List<ClassTableItem> getClassTableList() { return MemManager.classTable.classTableList; }
 
     public static List<DeputyTableItem> getDeputyTableList() { return MemManager.deputyTable.deputyTableList; }

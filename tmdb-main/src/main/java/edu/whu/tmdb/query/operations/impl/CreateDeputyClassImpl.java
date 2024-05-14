@@ -50,14 +50,14 @@ public class CreateDeputyClassImpl implements CreateDeputyClass {
         SelectResult selectResult = getSelectResult(selectStmt);
 
         // 2.执行代理类创建
-        int deputyId = createDeputyClass(deputyClassName, selectResult, deputyType);
+        int deputyId = createDeputyClass(deputyClassName, selectResult, deputyType,stmt.getSelect().toString());
         createDeputyTableItem(selectResult.getClassName(), deputyType, deputyId);
         createBiPointerTableItem(selectResult, deputyId);
         return true;
     }
 
     public boolean createDeputyClassStreamLine(SelectResult selectResult, int deputyType, String deputyClassName) throws TMDBException, IOException {
-        int deputyId = createDeputyClass(deputyClassName, selectResult, deputyType);
+        int deputyId = createDeputyClass(deputyClassName, selectResult, deputyType,"");
         createDeputyTableItem(selectResult.getClassName(), deputyType, deputyId);
         createBiPointerTableItem(selectResult, deputyId);
         return true;
@@ -72,7 +72,7 @@ public class CreateDeputyClassImpl implements CreateDeputyClass {
      * @param deputyRule 代理规则
      * @return 新建代理类ID
      */
-    private int createDeputyClass(String deputyClassName, SelectResult selectResult, int deputyRule) throws TMDBException {
+    private int createDeputyClass(String deputyClassName, SelectResult selectResult, int deputyRule,String DetailDeputyRule) throws TMDBException {
         // TODO-task3
         // 遍历selectResult
 
@@ -97,7 +97,7 @@ public class CreateDeputyClassImpl implements CreateDeputyClass {
             // 使用MemConnect.getSwitchingTableList().add()
             orid=memConnect.getClassId(selectResult.getClassName()[i]);
             MemConnect.getSwitchingTableList().add(new SwitchingTableItem(orid,selectResult.getAttrid()[i],selectResult.getAttrname()[i]
-                    ,classid,i,selectResult.getAttrname()[i],String.valueOf(deputyRule)));
+                    ,classid,i,selectResult.getAttrname()[i],String.valueOf(deputyRule)+DetailDeputyRule));
         }
         return classid;
     }

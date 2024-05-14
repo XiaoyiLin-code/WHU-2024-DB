@@ -24,7 +24,6 @@ import edu.whu.tmdb.query.operations.utils.MemConnect;
 import edu.whu.tmdb.query.operations.utils.SelectResult;
 
 
-
 public class DeleteImpl implements Delete {
     private MemConnect memConnect;
 

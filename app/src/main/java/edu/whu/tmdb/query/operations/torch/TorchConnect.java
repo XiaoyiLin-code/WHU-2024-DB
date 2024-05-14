@@ -86,7 +86,7 @@ public class TorchConnect {
     public void mapMatching() {
         String filePath = Constants.TORCH_RES_BASE_DIR+"/raw/porto_raw_trajectory.txt"; // 替换为实际的文件路径
         String pbfFilePath=Constants.TORCH_RES_BASE_DIR+"/raw/Porto.osm.pbf";
-        Transaction.getInstance(null).SaveAll();
+        Transaction.getInstance().SaveAll();
     }
 
     public void initEngine() {

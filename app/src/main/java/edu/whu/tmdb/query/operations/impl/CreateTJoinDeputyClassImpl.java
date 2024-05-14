@@ -38,7 +38,7 @@ public class CreateTJoinDeputyClassImpl extends CreateDeputyClassImpl{
         }
         Select select = stmt.getSelect();
         TJoinSelect tJoinSelect=new TJoinSelect();
-        SelectResult selectResult = tJoinSelect.select(select); //这句有问题
+        SelectResult selectResult = tJoinSelect.select(select);
         List<SelectBody> selects = ((SetOperationList) select.getSelectBody()).getSelects();
         String[] strings = new String[0];
         if (!selects.isEmpty()) {

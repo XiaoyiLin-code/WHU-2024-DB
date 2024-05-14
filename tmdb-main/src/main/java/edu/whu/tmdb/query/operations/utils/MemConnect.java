@@ -151,6 +151,28 @@ public class MemConnect {
     }
 
     /**
+     * Given a classId, get the attribute names of the class
+     * @param classId The id of the class
+     * @return The attribute names of the given classId
+     * @throws TMDBException If no class is found with the given id, throw an exception
+     */
+    public List<String> getColumns(int classId) throws TMDBException {
+        List<ClassTableItem> classTableItems = getClassTableList(); // Assuming this method returns a list of all class table entries
+        List<String> attributes = new ArrayList<>();
+        for (ClassTableItem item : classTableItems) {
+            if (item.classid == classId) {
+                attributes.add(item.attrname);
+            }
+        }
+        if (attributes.isEmpty())
+            // If no class is found with the provided ID, throw an exception
+            throw new TMDBException(ErrorList.CLASS_ID_DOES_NOT_EXIST,"No class found with ID: " + classId);
+        else
+            return attributes;
+    }
+
+
+    /**
      * 给定表名(类名), 获取表在中属性的数量
      * @param tableName 表名(类名)
      * @return 给定表名(类名)所具有的属性数量(attrNum)
@@ -245,6 +267,27 @@ public class MemConnect {
     }
 
     /**
+     * 给定classID，获取表下的所有元组
+     * @param classId 类id
+     * @return 查询语句中，该表之下所具有的所有元组
+     * @throws TMDBException 不存在给定表名的表，抛出异常
+     */
+    public TupleList getTupleList(int classId) throws TMDBException {
+        TupleList tupleList = new TupleList();
+        for (ObjectTableItem item : getObjectTableList()) {
+            if (item.classid != classId) {
+                continue;
+            }
+            Tuple tuple = GetTuple(item.tupleid);
+            if (tuple != null && !tuple.delete) {
+                tuple.setTupleId(item.tupleid);
+                tupleList.addTuple(tuple);
+            }
+        }
+        return tupleList;
+    }
+
+    /**
      * 给定表名，获取表名class table的副本
      * @param fromItem 表名
      * @return 表名对应的class table副本
@@ -315,13 +358,80 @@ public class MemConnect {
                 found = true;
             }
         }
-
-/*        if (!found) {
-            throw new TMDBException(ErrorList.CLASS_NAME_DOES_NOT_EXIST);
-        }*/
-
         return deputyIds;
+    }
 
+    /**
+     * Given a deputyClassId, get the corresponding origin classes
+     * @param deputyClassId The id of the deputy class
+     * @return The origin classes of the given deputyClassId
+     * @throws TMDBException If no deputy class is found with the given id, throw an exception
+     */
+    public List<Integer> getOriginIDList(int deputyClassId) throws TMDBException {
+        List<DeputyTableItem> deputyTableItems = getDeputyTableList(); // Assuming this method returns a list of all deputy table entries
+        List<Integer> originClasses = new ArrayList<>();
+        for (DeputyTableItem item : deputyTableItems) {
+            if (item.deputyid == deputyClassId) {
+                originClasses.add(item.originid); // Add the origin class for the deputy class
+            }
+        }
+        if (originClasses.isEmpty())
+            // If no deputy class is found with the provided ID, throw an exception
+            throw new TMDBException(ErrorList.DEPUTY_ID_DOES_NOT_EXIST,"No deputy class found with ID: " + deputyClassId);
+        else
+            return originClasses;
+    }
+
+    /**
+     * Given an originId and a deputyId, get the corresponding deputyId
+     * @param originId1 The id of the origin class
+     * @param deputyId The id of the deputy class
+     * @return The deputy class of the given originId
+     * @throws TMDBException If no deputy class is found with the given id, throw an exception
+     */
+    public Integer getAnotherOriginID(int deputyId, int originId1) throws TMDBException {
+        List<DeputyTableItem> deputyTableItems = getDeputyTableList(); // Assuming this method returns a list of all deputy table entries
+        for (DeputyTableItem item : deputyTableItems) {
+            if (item.deputyid == deputyId && item.originid != originId1) {
+                return item.deputyid; // Return the origin class for the deputy class
+            }
+        }
+        // If no deputy class is found with the provided ID, throw an exception
+        throw new TMDBException(ErrorList.DEPUTY_ID_DOES_NOT_EXIST,"No deputy class found with ID: " + deputyId);
+    }
+
+    /**
+     * Given a deputyId, get the corresponding deputytype
+     * @param deputyId The id of the deputy class
+     * @return The deputytype of the given deputyId
+     * @throws TMDBException If no deputy class is found with the given id, throw an exception
+     */
+    public String[] getDeputyType(int deputyId) throws TMDBException {
+        List<DeputyTableItem> deputyTableItems = getDeputyTableList(); // Assuming this method returns a list of all deputy table entries
+        for (DeputyTableItem item : deputyTableItems) {
+            if (item.deputyid == deputyId) {
+                return item.deputyrule; // Return the deputytype for the deputy class
+            }
+        }
+        // If no deputy class is found with the provided ID, throw an exception
+        throw new TMDBException(ErrorList.DEPUTY_ID_DOES_NOT_EXIST,"No deputy class found with ID: " + deputyId);
+    }
+
+    /**
+     * Given an originId, get the corresponding deputytypes
+     * @param originId The id of the origin class
+     * @return The deputytypes of the given originId
+     * @throws TMDBException If no deputy class is found with the given id, throw an exception
+     */
+    public String[][] getDeputyTypeList(int originId) throws TMDBException {
+        List<DeputyTableItem> deputyTableItems = getDeputyTableList(); // Assuming this method returns a list of all deputy table entries
+        List<String[]> deputyTypes = new ArrayList<>();
+        for (DeputyTableItem item : deputyTableItems) {
+            if (item.originid == originId) {
+                deputyTypes.add(item.deputyrule); // Add the deputytype for the deputy class
+            }
+        }
+        return deputyTypes.toArray(new String[0][]);
     }
 
     public boolean Condition(String attrtype, Tuple tuple, int attrid, String value1) {

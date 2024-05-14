@@ -90,7 +90,7 @@ drop class tjoin1;
 drop class tjoin2;
 #############################Test 3 End#########################################
 
-#############################Test 4 Begin <?> #############################
+#############################Test 4 Begin <passed> #############################
 # selectdeputy:代理类的增、改, 跨类查询
 CREATE CLASS faculty (name char,age int, salary int);
 INSERT INTO faculty VALUES (faa,20,1000);

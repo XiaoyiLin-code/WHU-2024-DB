@@ -20,4 +20,5 @@ public class ErrorList {
     public static final int MISSING_FROM_CLAUSE         = 5;
     public static final int TYPE_IS_NOT_SUPPORTED       = 6;
     public static final int TYPE_DOES_NOT_MATCH         = 7;
+    public static final int DEPUTY_ID_DOES_NOT_EXIST    = 8;
 }

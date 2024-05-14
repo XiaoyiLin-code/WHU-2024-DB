@@ -502,7 +502,7 @@ public class SelectImpl implements edu.whu.tmdb.query.operations.Select {
         // 进行join操作
         if(!(plainSelect.getJoins() == null)){
             for (Join join:plainSelect.getJoins()) {
-                // 获取当前join表的的一些元祖
+                // 获取当前join表的的一些元组
                 ArrayList<ClassTableItem> tempClassTableItem = memConnect.copyClassTableList(join.getRightItem());
                 TupleList tempTupleList = memConnect.getTupleList(join.getRightItem());
                 SelectResult tempSelectResult = getSelectResult(tempClassTableItem, tempTupleList);

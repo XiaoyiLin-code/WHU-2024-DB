@@ -50,7 +50,10 @@ public class CreateDeputyClassImpl implements CreateDeputyClass {
         SelectResult selectResult = getSelectResult(selectStmt);
 
         // 2.执行代理类创建
-        return createDeputyClassStreamLine(selectResult, deputyType, deputyClassName);
+        int deputyId = createDeputyClass(deputyClassName, selectResult, deputyType);
+        createDeputyTableItem(selectResult.getClassName(), deputyType, deputyId);
+        createBiPointerTableItem(selectResult, deputyId);
+        return true;
     }
 
     public boolean createDeputyClassStreamLine(SelectResult selectResult, int deputyType, String deputyClassName) throws TMDBException, IOException {
@@ -84,13 +87,11 @@ public class CreateDeputyClassImpl implements CreateDeputyClass {
         int count=selectResult.getAttrid().length;
         int orid=-1;
         for (int i = 0; i < count; i++) {
+            // 1.新建classTableItem
+            // 使用MemConnect.getClassTableList().add()
             MemConnect.getClassTableList().add(new ClassTableItem(deputyClassName,classid, count,
                     i, selectResult.getAttrname()[i],selectResult.getType()[i]
                     ,"de",""));
-
-
-            // 1.新建classTableItem
-            // 使用MemConnect.getClassTableList().add()
 
             // 2.新建switchingTableItem
             // 使用MemConnect.getSwitchingTableList().add()
@@ -135,7 +136,7 @@ public class CreateDeputyClassImpl implements CreateDeputyClass {
             HashSet<Integer> origin = getOriginClass(selectResult);
             for(int origin_index:origin){
                 int classId=memConnect.getClassId(selectResult.getClassName()[origin_index]);
-                int orinTupleId=tuple.getTupleId();
+                int orinTupleId=tuple.tupleIds[origin_index];
                 MemConnect.getBiPointerTableList().add(
                         new BiPointerTableItem(classId,orinTupleId,deputyId,deputyTupleId)
                 );

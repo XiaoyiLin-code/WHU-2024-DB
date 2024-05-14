@@ -96,9 +96,9 @@ CREATE CLASS faculty (name char,age int, salary int);
 INSERT INTO faculty VALUES (faa,20,1000);
 INSERT INTO faculty VALUES (fbb,30,8000);
 INSERT INTO faculty VALUES (fcc,30,8000);
-INSERT INTO faculty VALUES ("fdd",20,1000);
-INSERT INTO faculty VALUES ("fee",20,1000);
-INSERT INTO faculty VALUES ("fff",30,1000);
+INSERT INTO faculty VALUES (fdd,20,1000);
+INSERT INTO faculty VALUES (fee,20,1000);
+INSERT INTO faculty VALUES (fff,30,1000);
 
 create selectdeputy deputy as select name as n, age as a, salary as s from faculty;
 select * from deputy;
@@ -108,13 +108,8 @@ select * from deputy;
 
 UPDATE faculty SET salary=8000 WHERE name= '"gg"';
 select * from deputy;
-
-CREATE SELECTDEPUTY nands as SELECT name as n,salary+10 AS s FROM faculty WHERE salary=1000;
-select * from nands;
-
 #############################Test 4 End#########################################
 
-######ABORTED######
 #############################Test 5 Begin <?> #############################
 # joindeputy
 create class student (id int, name char);
@@ -125,7 +120,17 @@ create class faculty (id int, salary int);
 INSERT INTO faculty VALUES (1,1000);
 INSERT INTO faculty VALUES (3,8000);
 
-CREATE JOINDEPUTYCLASS assistant as (select student.name, salary from student,faculty where student.id = faculty.id);
+CREATE JOINDEPUTY assistant as (select student.name, salary from student,faculty where student.id = faculty.id);
+select * from assistant;
+
+delete from student where id = 1;
+select * from assistant;
+
+delete from faculty where id = 1;
+select * from assistant;
+
+INSERT INTO faculty VALUES (2,2000);
+select * from assistant;
 #############################Test 5 End#########################################
 
 #############################Test 6 Begin <?> ##################################
@@ -186,3 +191,6 @@ SELECT name AS faculty from faculty where age = 20 UNION SELECT name AS n2 from 
 # 单句嵌套代理类（最简单的方法：直接不允许这样做）
 create selectdeputy deputy as select name as n, age as a, salary as s from faculty, test;
 select * from deputy;
+
+CREATE SELECTDEPUTY nands as SELECT name as n,salary+10 AS s FROM faculty WHERE salary=1000;
+select * from nands;

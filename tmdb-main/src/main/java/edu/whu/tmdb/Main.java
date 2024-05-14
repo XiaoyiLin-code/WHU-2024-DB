@@ -26,87 +26,87 @@ import edu.whu.tmdb.storage.memory.SystemTable.ClassTable;
 
 public class Main {
     //前端界面输出
-    public static void main(String[] args) throws IOException, TMDBException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        String sqlCommand;
-        while ((sqlCommand = reader.readLine()) != null) {
-            if ("exit".equalsIgnoreCase(sqlCommand)) {
-                break;
-            } else {
-                try {
-                    SelectResult result = execute(sqlCommand);
-                    if (result != null) {
-                        DbOperation.printResult(result);
-                    }
-                    else {
-                        System.out.println("Command executed.");
-                    }
-                } catch (Exception e) {
-                    System.out.println("Error: " + e.getMessage());
-                }
-            }
-        }
-    }
+//    public static void main(String[] args) throws IOException, TMDBException {
+//        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+//        String sqlCommand;
+//        while ((sqlCommand = reader.readLine()) != null) {
+//            if ("exit".equalsIgnoreCase(sqlCommand)) {
+//                break;
+//            } else {
+//                try {
+//                    SelectResult result = execute(sqlCommand);
+//                    if (result != null) {
+//                        DbOperation.printResult(result);
+//                    }
+//                    else {
+//                        System.out.println("Command executed.");
+//                    }
+//                } catch (Exception e) {
+//                    System.out.println("Error: " + e.getMessage());
+//                }
+//            }
+//        }
+//    }
 
-    // //控制台输出
-    // public static void main(String[] args) throws IOException, TMDBException {
-    //     BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-    //     String sqlCommand;
-    //     System.out.println("1");
-    //     if (args.length > 0) {
-    //         switch (args[0]) {
-    //             case "test1":
-    //                 test1();
+     //控制台输出
+     public static void main(String[] args) throws IOException, TMDBException {
+         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+         String sqlCommand;
+         System.out.println("1");
+         if (args.length > 0) {
+             switch (args[0]) {
+                 case "test1":
+                     test1();
 
-    //                 break;
-    //             case "test2":
-    //                 test2();
-    //                 break;
-    //             default:
-    //                 System.out.println("Invalid command.");
-    //                 break;
-    //         }
-    //     } else {
-    //         System.out.println("No arguments provided.");
-    //     }
+                     break;
+                 case "test2":
+                     test2();
+                     break;
+                 default:
+                     System.out.println("Invalid command.");
+                     break;
+             }
+         } else {
+             System.out.println("No arguments provided.");
+         }
 
-    //     // 调试用
-    //     while (true) {
-    //         System.out.print("tmdb> ");
-    //         sqlCommand = reader.readLine().trim();
-    //         /*For debug*/
-    //         System.out.println("Running:"+sqlCommand);
-    //         /*For debug end*/
-    //         if ("exit".equalsIgnoreCase(sqlCommand)) {
-    //             break;
-    //         } else if ("resetdb".equalsIgnoreCase(sqlCommand)) {
-    //             DbOperation.resetDB();
-    //         } else if ("show BiPointerTable".equalsIgnoreCase(sqlCommand)) {
-    //             DbOperation.showBiPointerTable();
-    //         } else if ("show ClassTable".equalsIgnoreCase(sqlCommand)) {
-    //             DbOperation.showClassTable();
-    //         } else if ("show DeputyTable".equalsIgnoreCase(sqlCommand)) {;
-    //             DbOperation.showDeputyTable();
-    //         } else if ("show SwitchingTable".equalsIgnoreCase(sqlCommand)) {
-    //             DbOperation.showSwitchingTable();
-    //         } else if (!sqlCommand.isEmpty()) {
-    //             SelectResult result = execute(sqlCommand);
-    //             if (result != null) {
-    //                 DbOperation.printResult(result);
-    //             }
-    //         }
-    //     }
+         // 调试用
+         while (true) {
+             System.out.print("tmdb> ");
+             sqlCommand = reader.readLine().trim();
+             /*For debug*/
+             System.out.println("Running:"+sqlCommand);
+             /*For debug end*/
+             if ("exit".equalsIgnoreCase(sqlCommand)) {
+                 break;
+             } else if ("resetdb".equalsIgnoreCase(sqlCommand)) {
+                 DbOperation.resetDB();
+             } else if ("show BiPointerTable".equalsIgnoreCase(sqlCommand)) {
+                 DbOperation.showBiPointerTable();
+             } else if ("show ClassTable".equalsIgnoreCase(sqlCommand)) {
+                 DbOperation.showClassTable();
+             } else if ("show DeputyTable".equalsIgnoreCase(sqlCommand)) {;
+                 DbOperation.showDeputyTable();
+             } else if ("show SwitchingTable".equalsIgnoreCase(sqlCommand)) {
+                 DbOperation.showSwitchingTable();
+             } else if (!sqlCommand.isEmpty()) {
+                 SelectResult result = execute(sqlCommand);
+                 if (result != null) {
+                     DbOperation.printResult(result);
+                 }
+             }
+         }
 
 
-    //     // execute("show tables;");
-    //     // execute(args[0]);
-    //     // transaction.test();
-    //     // transaction.test2();
-    //     // insertIntoTrajTable();
-    //     // testMapMatching();
-    //     // testEngine();
-    //     // testTorch3();
-    // }
+         // execute("show tables;");
+         // execute(args[0]);
+         // transaction.test();
+         // transaction.test2();
+         // insertIntoTrajTable();
+         // testMapMatching();
+         // testEngine();
+         // testTorch3();
+     }
 
     private static void test1() throws TMDBException {
         System.out.println("Running test1...");

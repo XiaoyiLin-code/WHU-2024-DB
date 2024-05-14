@@ -311,6 +311,21 @@ public class MemConnect {
         return classTableList;
     }
 
+    public ArrayList<ClassTableItem> copyClassTableList(String ClassName) throws TMDBException{
+        ArrayList<ClassTableItem> classTableList = new ArrayList<>();
+        for (ClassTableItem item : getClassTableList()){
+            if (item.classname.equals(ClassName)){
+                // 硬拷贝，不然后续操作会影响原始信息
+                ClassTableItem classTableItem = item.getCopy();
+                classTableList.add(classTableItem);
+            }
+        }
+        if (classTableList.isEmpty()) {
+            throw new TMDBException(ErrorList.CLASS_NAME_DOES_NOT_EXIST, ClassName);
+        }
+        return classTableList;
+    }
+
     /**
      * 给定表名，返回该表是否存在，存在返回true
      * @param tableName 表名

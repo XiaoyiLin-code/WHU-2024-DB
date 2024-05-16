@@ -133,7 +133,7 @@ public class MemManager {
             //先写日志
             K k = new K("t" + ((Tuple) o).tupleId);
             V v = new V(JSONObject.toJSONString((Tuple) o));
-            logManager.WriteLog(k.key, (byte) 0, v.valueString);
+//            logManager.WriteLog(k.key, (byte) 0, v.valueString);
             this.memTable.put(k, v);
             this.currentMemSize += k.key.length() + v.valueString.length();
 

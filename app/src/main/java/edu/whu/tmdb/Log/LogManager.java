@@ -184,45 +184,45 @@ public class LogManager {
 
     //给定参数key、op、value，将日志持久化到磁盘
     public void WriteLog(String k, Byte op, String v) {
-        int flag = 0;
-        LogTableItem LogItem = new LogTableItem(currentId, op, k, v);     //把语句传入logItem，这个时候都是未完成
-        LogItem.offset = currentOffset;
-        currentId++;
-        writeLogItemToSSTable(LogItem);
-        //System.out.println("该条日志已写入，详细信息为：" + LogItem);
-
-        iterator = Map.entrySet().iterator();
-        //将该日志记录的logid按对象分类
-
-        while (iterator.hasNext()) {
-            Map.Entry<String, List<Integer>> entry = iterator.next();
-            if (LogItem.value == entry.getKey()) {
-                entry.getValue().add(LogItem.logid);
-                flag = 1;
-                break;
-            }
-        }
-        if (flag == 0) {
-            List<Integer> list = new ArrayList<Integer>();//hashmap里没找到该对象则新建一个列表
-            list.add(LogItem.logid);
-            Map.put(LogItem.value, list);
-        }
-        /**
-         List<Integer> list = new ArrayList<Integer>();
-         list.add(1);
-         list.add(2);
-         Map.put("v3",list);
-         List<Integer> list1 = new ArrayList<Integer>();
-         list1.add(3);
-         list1.add(4);
-         Map.put("v4",list1);
-         **/
-
-        bTree_indexer.insert(Integer.toString(LogItem.logid), LogItem.offset);//将记录offset的节点插入b树中
-        int type = checkFileInSize();
-        if (type == 2) {//将索引B树持久化到磁盘
-            bTree_indexer.write(bTreeWriteAccess, 0);
-        }
+//        int flag = 0;
+//        LogTableItem LogItem = new LogTableItem(currentId, op, k, v);     //把语句传入logItem，这个时候都是未完成
+//        LogItem.offset = currentOffset;
+//        currentId++;
+//        writeLogItemToSSTable(LogItem);
+//        //System.out.println("该条日志已写入，详细信息为：" + LogItem);
+//
+//        iterator = Map.entrySet().iterator();
+//        //将该日志记录的logid按对象分类
+//
+//        while (iterator.hasNext()) {
+//            Map.Entry<String, List<Integer>> entry = iterator.next();
+//            if (LogItem.value == entry.getKey()) {
+//                entry.getValue().add(LogItem.logid);
+//                flag = 1;
+//                break;
+//            }
+//        }
+//        if (flag == 0) {
+//            List<Integer> list = new ArrayList<Integer>();//hashmap里没找到该对象则新建一个列表
+//            list.add(LogItem.logid);
+//            Map.put(LogItem.value, list);
+//        }
+//        /**
+//         List<Integer> list = new ArrayList<Integer>();
+//         list.add(1);
+//         list.add(2);
+//         Map.put("v3",list);
+//         List<Integer> list1 = new ArrayList<Integer>();
+//         list1.add(3);
+//         list1.add(4);
+//         Map.put("v4",list1);
+//         **/
+//
+//        bTree_indexer.insert(Integer.toString(LogItem.logid), LogItem.offset);//将记录offset的节点插入b树中
+//        int type = checkFileInSize();
+//        if (type == 2) {//将索引B树持久化到磁盘
+//            bTree_indexer.write(bTreeWriteAccess, 0);
+//        }
     }
 
 

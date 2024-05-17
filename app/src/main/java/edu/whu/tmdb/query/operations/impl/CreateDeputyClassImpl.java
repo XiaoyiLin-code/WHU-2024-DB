@@ -51,14 +51,14 @@ public class CreateDeputyClassImpl implements CreateDeputyClass {
 
         // 2.执行代理类创建
         int deputyId = createDeputyClass(deputyClassName, selectResult, deputyType,stmt.getSelect().toString());
-        createDeputyTableItem(selectResult.getClassName(), deputyType, deputyId);
+        createDeputyTableItem(deputyClassName,selectResult.getClassName(), deputyType, deputyId);
         createBiPointerTableItem(selectResult, deputyId);
         return true;
     }
 
     public boolean createDeputyClassStreamLine(SelectResult selectResult, int deputyType, String deputyClassName) throws TMDBException, IOException {
         int deputyId = createDeputyClass(deputyClassName, selectResult, deputyType,"");
-        createDeputyTableItem(selectResult.getClassName(), deputyType, deputyId);
+        createDeputyTableItem(deputyClassName,selectResult.getClassName(), deputyType, deputyId);
         createBiPointerTableItem(selectResult, deputyId);
         return true;
     }
@@ -111,11 +111,11 @@ public class CreateDeputyClassImpl implements CreateDeputyClass {
      * @param deputyType 代理规则
      * @param deputyId 代理类id
      */
-    public void createDeputyTableItem(String[] classNames, int deputyType, int deputyId) throws TMDBException {
+    public void createDeputyTableItem(String deputyClassName,String[] classNames, int deputyType, int deputyId) throws TMDBException {
         HashSet<String> Names = Arrays.stream(classNames).collect(Collectors.toCollection(HashSet::new));
         for(String name:Names){
             int orid=memConnect.getClassId(name);
-            MemConnect.getDeputyTableList().add(new DeputyTableItem(orid,deputyId,new String[]{String.valueOf(deputyType)}));
+            MemConnect.getDeputyTableList().add(new DeputyTableItem(deputyClassName,orid,deputyId,new String[]{String.valueOf(deputyType)}));
         }
         // TODO-task3
         // 使用MemConnect.getDeputyTableList().add()

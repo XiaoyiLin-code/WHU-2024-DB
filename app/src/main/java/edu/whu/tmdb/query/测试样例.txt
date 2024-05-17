@@ -6,7 +6,8 @@ INSERT INTO faculty VALUES (bb,30,8000);
 INSERT INTO faculty VALUES (cc,30,8000);
 INSERT INTO faculty VALUES ("dd",20,1000);
 INSERT INTO faculty VALUES ("ee",20,1000);
-INSERT INTO faculty VALUES ("ff",30,1000);SELECT name from faculty UNION SELECT name from faculty;
+INSERT INTO faculty VALUES ("ff",30,1000);
+SELECT name from faculty UNION SELECT name from faculty;
 SELECT name, AVG(salary) as b from faculty group by name;
 select name, sum(salary) as b from faculty group by name;
 #############################Test 1 End#########################################

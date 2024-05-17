@@ -58,8 +58,7 @@ public class ShowDep extends AppCompatActivity implements Serializable {
                 stemp1 = oj1.toString();
                 stemp2 = oj2.toString();
                 stemp3 = satemp[0].toString();
-//                stemp4 = deputyt.deputyTableList.get(i-1).deputyname;
-                stemp4 = " ";
+                stemp4 = deputyt.deputyTableList.get(i-1).deputyname;
             }
             for (int j = 0; j < tabCol; j++) {
                 TextView tv = new TextView(this);

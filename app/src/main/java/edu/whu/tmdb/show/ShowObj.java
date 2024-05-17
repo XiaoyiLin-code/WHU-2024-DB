@@ -38,7 +38,7 @@ public class ShowObj extends AppCompatActivity implements Serializable {
         //ArrayAdapter<String> adapter = new ArrayAdapter<String>(ShowObj.this,android.R.layout.simple_list_item_1,objects);
         //ListView tableList = findViewById(R.id.tablelist);
         //tableList.setAdapter(adapter);
-        int tabCol  = 3;
+        int tabCol  = 2;
         int tabH = topt.objectTableList.size();
         Object oj1,oj2,oj3,oj4;
         String stemp1,stemp2,stemp3,stemp4;

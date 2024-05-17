@@ -52,14 +52,14 @@ public class CreateTJoinDeputyClassImpl extends CreateDeputyClassImpl{
         }
         boolean help = super.createDeputyClassStreamLine(selectResult, 5, String.valueOf(deputyClass));
         if (strings.length!=0) {
-            insertElseDeputyTable(strings,5,deputyClass.toString());
+            insertElseDeputyTable(deputyClass.getName(),strings,5,deputyClass.toString());
         }
         return help;
     }
 
-    private void insertElseDeputyTable(String[] strings, int i, String deputyClass) throws TMDBException {
+    private void insertElseDeputyTable(String deputyClassName,String[] strings, int i, String deputyClass) throws TMDBException {
         int classId = memConnect.getClassId(deputyClass);
-        super.createDeputyTableItem(strings, i, classId);
+        super.createDeputyTableItem(deputyClassName,strings, i, classId);
     }
 
     public boolean createTJoinDeputyClass(Statement stmt) throws TMDBException, IOException {

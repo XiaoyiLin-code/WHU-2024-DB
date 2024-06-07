@@ -115,16 +115,7 @@ public class UpdateImpl implements Update {
         }
 
         // 4.递归修改所有代理类
-        for (int deputyId : deputyId2AttrId.keySet()) { // 遍历所有代理类id
-            TupleList updateTupleList = new TupleList();
-            for (Tuple tuple : deputyTupleList.tuplelist) {
-                if (tuple.classId == deputyId) {
-                    updateTupleList.addTuple(tuple);    // 找到该代理类的所有元组
-                }
-            }
-            int[] nextIndexs = deputyId2AttrId.get(deputyId).stream().mapToInt(Integer -> Integer).toArray();
-            Object[] nextUpdate = deputyId2UpdateValue.get(deputyId).toArray();
-
+        for (int deputyId : memConnect.getDeputyIdList(classId)) { // 遍历所有代理类id
             String[] deputyType = memConnect.getDeputyType(deputyId);
             if (deputyType[0].equals("1")) {
                 // 对于join代理类，先删除原有元组，然后添加新的元组
@@ -148,7 +139,15 @@ public class UpdateImpl implements Update {
                     }
                 }
             }
-            else {
+            else if(deputyId2AttrId.containsKey(deputyId)){ // Select Deputy
+                TupleList updateTupleList = new TupleList();
+                for (Tuple tuple : deputyTupleList.tuplelist) {
+                    if (tuple.classId == deputyId) {
+                        updateTupleList.addTuple(tuple);    // 找到该代理类的所有元组
+                    }
+                }
+                int[] nextIndexs = deputyId2AttrId.get(deputyId).stream().mapToInt(Integer -> Integer).toArray();
+                Object[] nextUpdate = deputyId2UpdateValue.get(deputyId).toArray();
                 // 对于select代理类，直接更新元组
                 update(updateTupleList, nextIndexs, nextUpdate, deputyId);
             }

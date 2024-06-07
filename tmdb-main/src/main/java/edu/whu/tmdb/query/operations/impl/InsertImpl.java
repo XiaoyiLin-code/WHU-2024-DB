@@ -171,7 +171,7 @@ public class InsertImpl implements Insert {
                         for (Tuple deputyTuple : deputyTupleList) {
                             int DeputyTupleId = execute(deputyClassId, deputyColumns, deputyTuple);
                             MemConnect.getBiPointerTableList().add(new BiPointerTableItem(classId, tupleid, deputyClassId, DeputyTupleId));
-                            //MemConnect.getBiPointerTableList().add(new BiPointerTableItem(anotherClassId, tupleid, deputyClassId, DeputyTupleId));
+                            //MemConnect.getBiPointerTableList().add(new BiPointerTableItem(anotherClassId, anothertupleid, deputyClassId, DeputyTupleId));
                         }
                     }
 

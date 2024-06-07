@@ -1,6 +1,7 @@
 package edu.whu.tmdb.query.operations.impl;
 
 import edu.whu.tmdb.query.operations.Exception.ErrorList;
+import edu.whu.tmdb.query.operations.Insert;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.expression.StringValue;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
@@ -23,6 +24,7 @@ import edu.whu.tmdb.storage.memory.TupleList;
 import edu.whu.tmdb.query.operations.Exception.TMDBException;
 import edu.whu.tmdb.query.operations.Select;
 import edu.whu.tmdb.query.operations.Update;
+import edu.whu.tmdb.query.operations.Drop;
 import edu.whu.tmdb.query.operations.utils.MemConnect;
 import edu.whu.tmdb.query.operations.utils.SelectResult;
 
@@ -73,7 +75,7 @@ public class UpdateImpl implements Update {
      * @param updateValue set语句中的第i个对应于源类中第j个属性修改后的值
      * @param classId     修改表的id
      */
-    public void update(TupleList tupleList, int[] indexs, Object[] updateValue, int classId) throws TMDBException {
+    public void update(TupleList tupleList, int[] indexs, Object[] updateValue, int classId) throws TMDBException, IOException {
         // 1.更新源类tuple
         ArrayList<Integer> updateIdList = new ArrayList<>();
         for (Tuple tuple : tupleList.tuplelist) {
@@ -122,7 +124,34 @@ public class UpdateImpl implements Update {
             }
             int[] nextIndexs = deputyId2AttrId.get(deputyId).stream().mapToInt(Integer -> Integer).toArray();
             Object[] nextUpdate = deputyId2UpdateValue.get(deputyId).toArray();
-            update(updateTupleList, nextIndexs, nextUpdate, deputyId);
+
+            String[] deputyType = memConnect.getDeputyType(deputyId);
+            if (deputyType[0].equals("1")) {
+                // 对于join代理类，先删除原有元组，然后添加新的元组
+                for (Tuple tuple : deputyTupleList.tuplelist) {
+                    if(tuple.classId == deputyId) {
+                        memConnect.DeleteTuple(tuple.getTupleId());
+                    }
+                }
+                //对tupleList中的每一个元组，按照insert操作的逻辑方式进行插入。
+                String deputyDetailRule = memConnect.getDetailDeputyRule(deputyId);    // 获取join的详细规则
+                // 这里需要修改,应该先join， 然后再插入join的结果
+                List<String> deputyColumns = memConnect.getColumns(deputyId);    // join的结果的属性名列表
+                Integer anotherClassId = memConnect.getAnotherOriginID(deputyId, classId);    // join的结果的另一个源类id
+                SelectImpl select=new SelectImpl();
+                for (Tuple tuple : tupleList.tuplelist) {
+                    InsertImpl insert = new InsertImpl();
+                    List<Tuple> deputyNewTupleList = insert.getDeputyJoinTupleList(classId,tuple, anotherClassId,select,deputyDetailRule);    // 获取join的结果
+                    for (Tuple deputyTuple : deputyNewTupleList) {
+                        int DeputyTupleId = insert.execute(deputyId, deputyColumns, deputyTuple);
+                        MemConnect.getBiPointerTableList().add(new BiPointerTableItem(classId, tuple.tupleId, deputyId, DeputyTupleId));
+                    }
+                }
+            }
+            else {
+                // 对于select代理类，直接更新元组
+                update(updateTupleList, nextIndexs, nextUpdate, deputyId);
+            }
         }
     }
 

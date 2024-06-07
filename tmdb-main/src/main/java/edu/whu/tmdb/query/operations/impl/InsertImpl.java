@@ -155,11 +155,16 @@ public class InsertImpl implements Insert {
                     if (deputyRule.equals("0")) { //Select Deputy
                         HashMap<String, String> attrNameHashMap = getAttrNameHashMap(classId, deputyClassId, columns);
                         List<String> deputyColumns = getDeputyColumns(attrNameHashMap, columns);    // 根据源类属性名列表获取代理类属性名列表
-                        Tuple deputyTuple = getSelectDeputyTuple(attrNameHashMap, tuple, columns);        // 将插入源类的元组tuple转换为插入代理类的元组deputyTuple
-
-                        // 递归插入
-                        int DeputyTupleId = execute(deputyClassId, deputyColumns, deputyTuple);
-                        MemConnect.getBiPointerTableList().add(new BiPointerTableItem(classId, tupleid, deputyClassId, DeputyTupleId));
+                        //在这里先做select操作，然后再插入
+                        String deputyDetailRule = memConnect.getDetailDeputyRule(deputyClassId);    // 获取select的详细规则
+                        List<Tuple> deputyTupleList = getDeputySelectTupleList(classId, tuple, deputyClassId, select, deputyDetailRule);    // 获取select的结果
+                        //Tuple deputyTuple = getSelectDeputyTuple(attrNameHashMap, tuple, columns);        // 将插入源类的元组tuple转换为插入代理类的元组deputyTuple
+                        if(!deputyTupleList.isEmpty()) {
+                            Tuple deputyTuple = deputyTupleList.get(0);
+                            // 递归插入
+                            int DeputyTupleId = execute(deputyClassId, deputyColumns, deputyTuple);
+                            MemConnect.getBiPointerTableList().add(new BiPointerTableItem(classId, tupleid, deputyClassId, DeputyTupleId));
+                        }
                     }
 
                     else if(deputyRule.equals("1")){ //Join Deputy
@@ -180,6 +185,46 @@ public class InsertImpl implements Insert {
 
         }
         return tupleid;
+    }
+
+    /**
+     * Join the given tuple with all tuples of another class
+     * @param tuple The given tuple
+     * @param anotherClassId The id of the other class
+     * @return The list of joined tuples
+     * @throws TMDBException If no class is found with the given id, throw an exception
+     */
+    public List<Tuple> getDeputySelectTupleList(int thisClassID,Tuple tuple, int anotherClassId, SelectImpl select,String DeputyDetailRule) throws TMDBException {
+        List<Tuple> deputyInsertTupleList = new ArrayList<>(); //Result
+
+        //获取另外一个类的所有Tuple->SelectResult
+        List<ObjectTableItem> objs= MemConnect.getObjectTableList();
+        List<ClassTableItem> classTableItems = memConnect.getClassTableList(); // Assuming this method returns a list of all class table entries
+
+        //构建本类的SelectResult
+        TupleList thisTupleList = new TupleList();
+        thisTupleList.addTuple(tuple);
+        SelectResult  left =  getSelectResultInformation(thisClassID, classTableItems, thisTupleList);
+
+        SelectImpl selectImpl = new SelectImpl();
+        try {
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(DeputyDetailRule.getBytes());
+            Statement stmt = CCJSqlParserUtil.parse(byteArrayInputStream);
+            SelectBody selectBody = ((net.sf.jsqlparser.statement.select.Select)stmt).getSelectBody();
+            PlainSelect plainSelect = (PlainSelect) selectBody;
+            if (plainSelect.getWhere() != null){
+                Where where = new Where();
+                left = where.where(plainSelect, left);
+            }
+            left = select.projection(plainSelect, left);
+        }
+        catch (JSQLParserException e) {
+            System.out.println("syntax error");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        deputyInsertTupleList = left.getTpl().tuplelist;
+        return deputyInsertTupleList;
     }
 
     /**
@@ -315,8 +360,10 @@ public class InsertImpl implements Insert {
         Object[] temp = new Object[attrNameHashMap.size()];
         int i = 0;
         for(String originColumn : originColumns){
-            temp[i] = originTuple.tuple[originColumns.indexOf(originColumn)];
-            i++;
+            if(attrNameHashMap.containsKey(originColumn)){
+                temp[i] = originTuple.tuple[originColumns.indexOf(originColumn)];
+                i++;
+            }
         }
         deputyTuple.tuple = temp;
         return deputyTuple;
